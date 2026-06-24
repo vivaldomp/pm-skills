@@ -4,7 +4,7 @@ const path = require('node:path');
 const NAME_RE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
 function parseFrontmatter(src) {
-  const m = src.match(/^---\n([\s\S]*?)\n---/);
+  const m = src.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/);
   if (!m) return null;
   const obj = {};
   for (const line of m[1].split('\n')) {
