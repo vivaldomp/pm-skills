@@ -1,11 +1,20 @@
 {
   "name": "pm-skills",
-  "owner": { "name": "Vivaldo", "email": "vivaldomp@gmail.com" },
+  "description": "A collection of tools to help product managers and designers improve their skills.",
+  "owner": {
+    "name": "Vivaldo Mendonça Pinto",
+    "email": "vivaldomp@gmail.com"
+  },
   "plugins": [
     {
       "name": "product-design-suite",
       "source": "./plugins/product-design-suite",
-      "description": "Guided PRD/SDD/ADR product-design workflow with cross-document sync and framework-free HTML visualizations."
+      "version": "0.1.0",
+      "description": "Guided PRD/SDD/ADR product-design workflow with cross-document sync and framework-free HTML visualizations.",
+      "author": {
+          "name": "Vivaldo Mendonça Pinto",
+          "email": "vivaldomp@gmail.com"
+        }
     }
   ]
 }

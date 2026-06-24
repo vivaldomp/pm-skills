@@ -1,6 +1,19 @@
 {
   "name": "product-design-suite",
   "version": "0.1.0",
-  "description": "Drives a Product Manager through a sequential PRD -> SDD -> ADR workflow: gap-only questioning, cross-document sync, and lightweight framework-free HTML diagrams and UI mockups, stored in .product/.",
-  "author": { "name": "Vivaldo", "email": "vivaldomp@gmail.com" }
+  "description": "Guided PRD/SDD/ADR product-design workflow with cross-document sync and framework-free HTML visualizations.",
+  "author": {
+    "name": "Vivaldo",
+    "email": "vivaldomp@gmail.com"
+  },
+  "homepage": "https://github.com/vivaldomp/pm-skills",
+  "repository": "https://github.com/vivaldomp/pm-skills",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "product-management",
+    "best-practices",
+    "product-design",
+    "workflows"
+  ]
 }
