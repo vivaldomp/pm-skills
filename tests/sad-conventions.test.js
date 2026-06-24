@@ -63,3 +63,21 @@ test('pm-product-workflow documents the optional SAD stage', () => {
   assert.match(s, /pm-sad-builder/);
   assert.match(s, /SAD/);
 });
+
+test('pm-doc-sync and pm-import handle the SAD', () => {
+  const sync = read('skills/pm-doc-sync/SKILL.md');
+  assert.match(sync, /SAD/);
+  const imp = read('skills/pm-import/SKILL.md');
+  assert.match(imp, /sad-template|\.product\/sad/i);
+});
+
+test('adr-template documents the related-sad field', () => {
+  const adr = read('shared/templates/adr-template.md');
+  assert.match(adr, /related-sad/);
+});
+
+test('concepts documents the SAD as an optional document', () => {
+  const s = read('shared/references/concepts.md');
+  assert.match(s, /SAD/);
+  assert.match(s, /\.product\/sad\/sad\.md/);
+});
