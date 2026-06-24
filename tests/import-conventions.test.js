@@ -46,3 +46,10 @@ test('pm-product-workflow detects existing source docs and legacy docs', () => {
   assert.match(s, /pm-import/);
   assert.match(s, /## 1\. Metadata|front-matter|legacy/i);
 });
+
+test('pm-doc-sync documents the legacy front-matter migration', () => {
+  const s = read('skills/pm-doc-sync/SKILL.md');
+  assert.match(s, /migrat/i);
+  assert.match(s, /## 1\. Metadata/);
+  assert.match(s, /front-matter/i);
+});
