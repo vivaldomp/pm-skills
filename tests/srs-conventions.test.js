@@ -51,3 +51,18 @@ test('pm-srs command exists and routes to the skill', () => {
   const s = read('commands/pm-srs.md');
   assert.match(s, /pm-srs/);
 });
+
+test('pm-prd-builder and pm-sdd-builder document SRS mode', () => {
+  const prd = read('skills/pm-prd-builder/SKILL.md');
+  assert.match(prd, /SRS/);
+  assert.match(prd, /\.product\/srs\/srs\.md/);
+  const sdd = read('skills/pm-sdd-builder/SKILL.md');
+  assert.match(sdd, /SRS/);
+  assert.match(sdd, /\.product\/srs\/srs\.md/);
+});
+
+test('pm-product-workflow documents the optional SRS stage', () => {
+  const s = read('skills/pm-product-workflow/SKILL.md');
+  assert.match(s, /pm-srs-builder/);
+  assert.match(s, /SRS/);
+});
