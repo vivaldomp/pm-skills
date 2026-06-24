@@ -66,3 +66,17 @@ test('pm-product-workflow documents the optional SRS stage', () => {
   assert.match(s, /pm-srs-builder/);
   assert.match(s, /SRS/);
 });
+
+test('pm-doc-sync and pm-import handle the SRS', () => {
+  const sync = read('skills/pm-doc-sync/SKILL.md');
+  assert.match(sync, /SRS/);
+  const imp = read('skills/pm-import/SKILL.md');
+  assert.match(imp, /srs-template|\.product\/srs/i);
+  assert.doesNotMatch(imp, /no native template/i);
+});
+
+test('concepts documents the SRS as an optional document', () => {
+  const s = read('shared/references/concepts.md');
+  assert.match(s, /SRS/);
+  assert.match(s, /\.product\/srs\/srs\.md/);
+});
