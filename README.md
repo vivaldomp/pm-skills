@@ -22,5 +22,5 @@ Generated artifacts are written to `.product/`.
 Run validation and tests:
 ```bash
 node tools/validate-plugin.js .
-node --test tests/
+node --test          # auto-discovers tests/*.test.js (Node >= 18)
 ```
