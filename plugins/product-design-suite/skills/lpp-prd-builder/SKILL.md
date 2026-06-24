@@ -12,7 +12,7 @@ Build or update the PRD at `.product/prd/prd.md` from the shared template.
 
 ## Inputs
 - Template: `${CLAUDE_PLUGIN_ROOT}/shared/templates/prd-template.md`
-- Concepts/structure: `${CLAUDE_PLUGIN_ROOT}/shared/references/concepts.md`, `structures.md`
+- Concepts/structure: `${CLAUDE_PLUGIN_ROOT}/shared/references/concepts.md`, `${CLAUDE_PLUGIN_ROOT}/shared/references/structures.md`
 - Question cadence: `${CLAUDE_PLUGIN_ROOT}/shared/references/questioning-protocol.md`
 
 ## Steps

@@ -21,13 +21,13 @@ derived from the PRD.
    a PRD, and offer to run `lpp-prd-builder` first (do not hard-block).
 2. Read the SDD template and the PRD. Map PRD `FR-NNN` to Architectural
    Requirements `AR-NNN` in the SDD for traceability (reference the FR IDs).
-3. Fill each required section; ask gap questions per `questioning-protocol.md`.
+3. Fill each required section; ask gap questions per `questioning-protocol.md` (pause after every 4 questions and summarize remaining gaps).
 4. Render diagrams as self-contained HTML into `.product/diagrams/`:
    - Build a compact spec `{title, nodes, edges}` and run
      `${CLAUDE_PLUGIN_ROOT}/scripts/diagram-render.js <spec.json> .product/diagrams/<name>.html`
      for C4 context/container/component and sequence/flow diagrams.
 5. For UI/frontend sections, author OpenUI Lang in `.product/design/*.openui`
-   and render with `openui-render.js` to `.product/design/*.html`.
+   and render with `${CLAUDE_PLUGIN_ROOT}/scripts/openui-render.js` to `.product/design/*.html`.
 6. Identify decisions with significant trade-offs and flag them as ADR
    candidates; hand each to `lpp-adr-builder`. Reference resulting `ADR-NNN`
    in the SDD's "Referenced ADRs" section.

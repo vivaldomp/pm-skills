@@ -18,14 +18,17 @@ Record one architectural decision per file in `.product/adr/`.
 1. Ensure `.product/adr/` exists. Determine the next `ADR-NNN` by scanning
    existing files (zero-padded, starting at 001).
 2. Confirm the decision is significant and scoped to exactly ONE decision.
-3. Fill the ADR template; ask gap questions per `questioning-protocol.md`.
+3. Fill the ADR template; ask gap questions per `questioning-protocol.md`
+   (pause after every 4 questions and summarize remaining gaps).
    Options considered must be real alternatives (include "do nothing" when
    relevant).
 4. Link related PRD/SDD sections by their IDs in the Metadata block.
 5. Set Status (Proposed/Accepted/Superseded/Deprecated/Rejected) and append to
    the Status History table. When superseding, link the superseding ADR both
    ways.
-6. Write `.product/adr/ADR-NNN-<kebab-title>.md`.
+6. On finalize, record any unresolved questions or assumptions in the ADR's
+   **Assumptions** / **Decision Scope** sections — do not leave silent TBDs.
+7. Write `.product/adr/ADR-NNN-<kebab-title>.md`.
 7. Suggest running `lpp-doc-sync` so the SDD's "Referenced ADRs" stays current.
 
 ## Rules
