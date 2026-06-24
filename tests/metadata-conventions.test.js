@@ -47,3 +47,30 @@ test('ADR template drops the Metadata section and renumbers Context to 1', () =>
   assert.match(tpl, /## 7\. References/);
   assert.match(tpl, /## Status History/);
 });
+
+test('pm-adr-builder documents structured supersede/amend front-matter', () => {
+  const s = read('skills/pm-adr-builder/SKILL.md');
+  assert.match(s, /front-matter/i);
+  assert.match(s, /supersed/i);
+  assert.match(s, /amend/i);
+});
+
+test('pm-prd-builder and pm-sdd-builder populate front-matter', () => {
+  assert.match(read('skills/pm-prd-builder/SKILL.md'), /front-matter/i);
+  assert.match(read('skills/pm-sdd-builder/SKILL.md'), /front-matter/i);
+});
+
+test('pm-doc-sync checks supersede/amend link symmetry', () => {
+  const s = read('skills/pm-doc-sync/SKILL.md');
+  assert.match(s, /supersed/i);
+  assert.match(s, /symmetr|asymmetr|reciprocal/i);
+});
+
+test('references document front-matter metadata and relationship fields', () => {
+  const st = read('shared/references/structures.md');
+  const co = read('shared/references/concepts.md');
+  assert.match(st, /front-matter/i);
+  assert.match(st, /superseded-by/i);
+  assert.match(co, /front-matter/i);
+  assert.match(co, /amend/i);
+});

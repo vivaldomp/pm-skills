@@ -24,8 +24,10 @@ Build or update the PRD at `.product/prd/prd.md` from the shared template.
    remaining gaps).
 5. Assign stable IDs: functional `FR-NNN`, business rules `BR-NNN`,
    non-functional `NFR-NNN`, UAT `UAT-NNN`. Keep IDs stable across updates.
-6. On finalize, write `.product/prd/prd.md` and record unresolved gaps in the
-   **Open Questions** table.
+6. On finalize, populate the YAML front-matter (`title`, `status`, `version`,
+   `owner`, `date`) — bump `version` and refresh `date` on an update — write
+   `.product/prd/prd.md`, and record unresolved gaps in the **Open Questions**
+   table.
 7. Optionally produce `.product/prd/prd-summary.html` (objectives + success
    metrics) by authoring OpenUI Lang and rendering with
    `${CLAUDE_PLUGIN_ROOT}/scripts/openui-render.js`.

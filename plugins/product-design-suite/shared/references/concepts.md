@@ -124,7 +124,7 @@ ADRs are usually written by engineers, architects, or tech leads at the moment a
 
 ### What an ADR should contain
 
-- Metadata: ID, title, status, date, author, reviewers, and related documents.
+- Metadata: ID, title, status, date, author, reviewers, related documents, and supersede/amend relationships — recorded in a YAML front-matter block.
 - Context: the problem, drivers, constraints, and forces influencing the decision.
 - Options considered: feasible alternatives, including the option to do nothing when relevant.
 - Evaluation: benefits, costs, risks, complexity, operational impact, security impact, and trade-offs.
@@ -141,6 +141,10 @@ Common ADR statuses include:
 - Superseded: replaced by another ADR.
 - Deprecated: no longer recommended but still historically relevant.
 - Rejected: considered and intentionally not chosen.
+
+Supersede and amend relationships are recorded in dedicated front-matter fields
+(`supersedes`/`superseded-by`/`amends`/`amended-by`), set on both ADRs, keeping
+`status` a single enum value rather than overloaded prose.
 
 ### Example ADR summary
 

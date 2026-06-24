@@ -371,6 +371,8 @@ ADR
 - Trade-offs and consequences are honest and specific.
 - Status is clear and maintained over time.
 - Superseded decisions link to the replacing ADR.
+- Metadata lives in a YAML front-matter block (id, title, status, date, author, reviewers, related-prd/sdd/adrs).
+- Supersede/amend relationships use the structured `supersedes`/`superseded-by`/`amends`/`amended-by` front-matter fields, set on both ADRs — not parentheticals on `status`.
 
 ## 4. Recommended repository structure
 
