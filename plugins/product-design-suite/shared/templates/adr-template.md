@@ -1,20 +1,22 @@
+---
+id: ADR-<NNN>
+title: <Decision title>
+status: <Proposed | Accepted | Superseded | Deprecated | Rejected>
+date: <YYYY-MM-DD>
+author: <Name or team>
+reviewers: [<Name or team>]
+supersedes: []      # ADR IDs this decision replaces, e.g. [ADR-003]
+superseded-by: []   # ADR IDs that replace this decision
+amends: []          # ADR IDs this decision modifies without replacing
+amended-by: []      # ADR IDs that modify this decision
+related-prd: []     # PRD section/ID references, e.g. ["§7 FR-012"]
+related-sdd: []     # SDD section references, e.g. ["§4 Components"]
+related-adrs: []    # other related ADR IDs
+---
+
 # ADR-<NNN>: <Decision Title>
 
-## 1. Metadata
-
-| Field | Value |
-| --- | --- |
-| ID | ADR-<NNN> |
-| Title | <Decision title> |
-| Status | <Proposed/Accepted/Superseded/Deprecated/Rejected> |
-| Date | <YYYY-MM-DD> |
-| Author | <Name or team> |
-| Reviewers | <Names or teams> |
-| Related PRD Sections | <PRD references> |
-| Related SDD Sections | <SDD references> |
-| Related ADRs | <ADR references> |
-
-## 2. Context
+## 1. Context
 
 ### Problem
 
@@ -44,7 +46,7 @@
 
 <Clarify what this ADR decides and what it does not decide.>
 
-## 3. Options Considered
+## 2. Options Considered
 
 ### Option A: <Option Name>
 
@@ -88,7 +90,7 @@
 - <Drawback 1>
 - <Drawback 2>
 
-## 4. Evaluation
+## 3. Evaluation
 
 | Criterion | Option A | Option B | Option C | Notes |
 | --- | --- | --- | --- | --- |
@@ -105,7 +107,7 @@
 
 <Describe the most important trade-offs the team accepts by making this decision.>
 
-## 5. Decision
+## 4. Decision
 
 ### Chosen Solution
 
@@ -123,7 +125,7 @@
 
 <Describe approval date, forum, quorum, or review outcome if applicable.>
 
-## 6. Consequences
+## 5. Consequences
 
 ### Positive Consequences
 
@@ -151,7 +153,7 @@
 - <Mitigation 1>
 - <Mitigation 2>
 
-## 7. Implementation Plan
+## 6. Implementation Plan
 
 ### Steps
 
@@ -176,7 +178,7 @@
 
 <Describe how the team will validate that the decision produces the intended outcome.>
 
-## 8. References
+## 7. References
 
 | Reference | Description | Link or Location |
 | --- | --- | --- |

@@ -23,6 +23,11 @@ without explicit user confirmation.
    affected downstream and upstream item, for example:
    - A changed PRD `FR-NNN` -> SDD sections referencing it, ADRs referencing it.
    - A changed/ superseded ADR -> SDD "Referenced ADRs" and design choices.
+   - Read each ADR's front-matter relationship fields (`supersedes`,
+     `superseded-by`, `amends`, `amended-by`) to find linked ADRs, and verify the
+     links are symmetric: if ADR-A lists `supersedes: [ADR-B]` but ADR-B lacks
+     `superseded-by: [ADR-A]` (or the reciprocal amend link is missing), report
+     the asymmetric/dangling link and propose the corrective edit.
    - A changed SDD contract -> PRD acceptance criteria that depend on it.
 4. For each impact, propose a **concrete edit** (show the exact before/after).
 5. Apply only the edits the user approves. Re-run step 1 afterward so the matrix

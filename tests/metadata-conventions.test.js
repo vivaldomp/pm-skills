@@ -1,0 +1,76 @@
+const test = require('node:test');
+const assert = require('node:assert');
+const fs = require('node:fs');
+const path = require('node:path');
+
+const root = path.join(__dirname, '..', 'plugins', 'product-design-suite');
+const read = p => fs.readFileSync(path.join(root, p), 'utf8');
+
+// Returns the YAML front-matter body (text between the opening and closing ---),
+// or null if the file does not start with a front-matter block.
+function frontMatter(text) {
+  const m = text.match(/^---\n([\s\S]*?)\n---/);
+  return m ? m[1] : null;
+}
+
+test('all three templates open with a YAML front-matter block', () => {
+  for (const f of ['prd-template.md', 'sdd-template.md', 'adr-template.md']) {
+    const text = read(path.join('shared/templates', f));
+    assert.ok(text.startsWith('---\n'), `${f} must start with front-matter`);
+    assert.ok(frontMatter(text), `${f} must have a closing --- delimiter`);
+  }
+});
+
+test('PRD and SDD front-matter declare the five metadata fields', () => {
+  for (const f of ['prd-template.md', 'sdd-template.md']) {
+    const fm = frontMatter(read(path.join('shared/templates', f)));
+    for (const key of ['title', 'status', 'version', 'owner', 'date']) {
+      assert.match(fm, new RegExp('^' + key + ':', 'm'), `${f} front-matter needs ${key}`);
+    }
+  }
+});
+
+test('ADR front-matter declares scalar and relationship fields', () => {
+  const fm = frontMatter(read('shared/templates/adr-template.md'));
+  const keys = ['id', 'title', 'status', 'date', 'author', 'reviewers',
+                'supersedes', 'superseded-by', 'amends', 'amended-by',
+                'related-prd', 'related-sdd', 'related-adrs'];
+  for (const key of keys) {
+    assert.match(fm, new RegExp('^' + key + ':', 'm'), `ADR front-matter needs ${key}`);
+  }
+});
+
+test('ADR template drops the Metadata section and renumbers Context to 1', () => {
+  const tpl = read('shared/templates/adr-template.md');
+  assert.doesNotMatch(tpl, /## \d+\. Metadata/);
+  assert.match(tpl, /## 1\. Context/);
+  assert.match(tpl, /## 7\. References/);
+  assert.match(tpl, /## Status History/);
+});
+
+test('pm-adr-builder documents structured supersede/amend front-matter', () => {
+  const s = read('skills/pm-adr-builder/SKILL.md');
+  assert.match(s, /front-matter/i);
+  assert.match(s, /supersed/i);
+  assert.match(s, /amend/i);
+});
+
+test('pm-prd-builder and pm-sdd-builder populate front-matter', () => {
+  assert.match(read('skills/pm-prd-builder/SKILL.md'), /front-matter/i);
+  assert.match(read('skills/pm-sdd-builder/SKILL.md'), /front-matter/i);
+});
+
+test('pm-doc-sync checks supersede/amend link symmetry', () => {
+  const s = read('skills/pm-doc-sync/SKILL.md');
+  assert.match(s, /supersed/i);
+  assert.match(s, /symmetr|asymmetr|reciprocal/i);
+});
+
+test('references document front-matter metadata and relationship fields', () => {
+  const st = read('shared/references/structures.md');
+  const co = read('shared/references/concepts.md');
+  assert.match(st, /front-matter/i);
+  assert.match(st, /superseded-by/i);
+  assert.match(co, /front-matter/i);
+  assert.match(co, /amend/i);
+});

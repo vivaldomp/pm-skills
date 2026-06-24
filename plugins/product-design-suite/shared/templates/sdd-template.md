@@ -1,3 +1,11 @@
+---
+title: <System or Initiative Name>
+status: <Draft | In Review | Approved | Superseded>
+version: <semver, e.g. 0.1.0>
+owner: <Name or team>
+date: <YYYY-MM-DD>
+---
+
 # SDD: <System or Initiative Name>
 
 ## 1. Introduction

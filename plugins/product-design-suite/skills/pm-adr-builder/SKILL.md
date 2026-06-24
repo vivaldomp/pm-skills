@@ -22,10 +22,15 @@ Record one architectural decision per file in `.product/adr/`.
    (pause after every 4 questions and summarize remaining gaps).
    Options considered must be real alternatives (include "do nothing" when
    relevant).
-4. Link related PRD/SDD sections by their IDs in the Metadata block.
-5. Set Status (Proposed/Accepted/Superseded/Deprecated/Rejected) and append to
-   the Status History table. When superseding, link the superseding ADR both
-   ways.
+4. Populate the YAML front-matter (`id`, `title`, `status`, `date`, `author`,
+   `reviewers`). Link related PRD/SDD/ADR references in the `related-prd`,
+   `related-sdd`, and `related-adrs` front-matter fields.
+5. Set `status` to a single enum value (Proposed/Accepted/Superseded/Deprecated/
+   Rejected) — never overload it with parentheticals. Record supersede/amend
+   relationships in the structured front-matter fields: set `supersedes` or
+   `amends` on this ADR **and** the reciprocal `superseded-by` or `amended-by`
+   on the target ADR (bidirectional). Append the change to the Status History
+   table.
 6. On finalize, record any unresolved questions or assumptions in the ADR's
    **Assumptions** / **Decision Scope** sections — do not leave silent TBDs.
 7. Write `.product/adr/ADR-NNN-<kebab-title>.md`.
