@@ -131,3 +131,22 @@ test('expandRange allows a 200-id span and caps at 201', () => {
   assert.equal(t.expandRange('FR-001', 'FR-200').length, 200);
   assert.deepEqual(t.expandRange('FR-001', 'FR-201'), ['FR-001', 'FR-201']);
 });
+
+test('parseRefs expands a bare sub-id tail in a slash list', () => {
+  assert.deepEqual(t.parseRefs('FR-010a/b'), ['FR-010a', 'FR-010b']);
+  assert.deepEqual(t.parseRefs('FR-001/002/003a'), ['FR-001', 'FR-002', 'FR-003a']);
+});
+
+test('parseRefs does not invent a sub-id from prose after a comma', () => {
+  assert.deepEqual(t.parseRefs('FR-001, and FR-002 follow'), ['FR-001', 'FR-002']);
+});
+
+test('buildMatrix scopes AR/UAT linkage to a sentence, not the whole paragraph', () => {
+  const m = t.buildMatrix({
+    prd: 'FR-001 a. FR-002 b.',
+    sdd: '## 5. X\nAR-001 implements FR-001. AR-002 implements FR-002.',
+    adrs: {},
+  });
+  assert.deepEqual(m.ars.find(a => a.id === 'AR-001').tracesTo, ['FR-001']);
+  assert.deepEqual(m.ars.find(a => a.id === 'AR-002').tracesTo, ['FR-002']);
+});

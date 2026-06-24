@@ -5,10 +5,10 @@ const PREFIX = '(?:FR|BR|NFR|AR|UAT|ADR)';
 const MEMBER = PREFIX + '-\\d+[a-z]?';
 // A reference group: an anchor member plus a run of continuation operators + members.
 const GROUP_RE = new RegExp(
-  MEMBER + '(?:\\s*(?:…|\\.\\.\\.|\\.\\.|[/,])\\s*(?:' + PREFIX + '-)?\\d+[a-z]?)*', 'g');
+  MEMBER + '(?:\\s*(?:…|\\.\\.\\.|\\.\\.|[/,])\\s*(?:' + PREFIX + '-)?\\d+[a-z]?|/[a-z](?![a-z\\d]))*', 'g');
 // Tokens inside a group. Member alternative first so 'FR-001' wins over '..'+digits.
 const TOKEN_RE = new RegExp(
-  PREFIX + '-\\d+[a-z]?|…|\\.\\.\\.|\\.\\.|[/,]|\\d+[a-z]?', 'g');
+  PREFIX + '-\\d+[a-z]?|…|\\.\\.\\.|\\.\\.|[/,]|\\d+[a-z]?|[a-z]', 'g');
 const RANGE_OPS = new Set(['…', '...', '..']);
 const LIST_OPS = new Set(['/', ',']);
 const MAX_SPAN = 200;
@@ -27,6 +27,8 @@ function memberParts(tok) {
   if (withPrefix) return { prefix: withPrefix[1], num: withPrefix[2], suf: withPrefix[3] };
   const bare = tok.match(/^(\d+)([a-z]?)$/);
   if (bare) return { prefix: null, num: bare[1], suf: bare[2] };
+  const bareSuf = tok.match(/^([a-z])$/);
+  if (bareSuf) return { prefix: null, num: null, suf: bareSuf[1] };
   return null;
 }
 
@@ -58,7 +60,9 @@ function parseGroup(group) {
     if (!parts) continue;
     if (parts.prefix) prefix = parts.prefix;
     if (!prefix) continue;
-    const cur = { prefix, num: parts.num, suf: parts.suf };
+    const num = parts.num !== null ? parts.num : (prev && prev.num);
+    if (!num) continue;
+    const cur = { prefix, num, suf: parts.suf };
     if (pendingRange && prev) {
       ids.pop(); // remove prev's standalone push; replace with the full range
       for (const r of expandRange(`${prev.prefix}-${prev.num}${prev.suf}`, `${cur.prefix}-${cur.num}${cur.suf}`)) {
@@ -113,10 +117,12 @@ function sectionAnchors(markdown, id) {
   return out;
 }
 
-function linksByParagraph(text, leftRe, rightRe) {
+function linksWithin(text, leftRe, rightRe) {
   const map = new Map();
-  for (const para of String(text || '').split(/\n\s*\n/)) {
-    const ids = parseRefs(para);
+  // Scope co-reference to a single sentence or line, not the whole paragraph,
+  // so "AR-001 implements FR-001. AR-002 implements FR-002." does not cross-link.
+  for (const seg of String(text || '').split(/\n+|(?<=\.)\s+/)) {
+    const ids = parseRefs(seg);
     const lefts = ids.filter(id => leftRe.test(id));
     const rights = ids.filter(id => rightRe.test(id));
     for (const l of lefts) {
@@ -139,8 +145,8 @@ function buildMatrix({ prd = '', sdd = '', adrs = {} } = {}) {
   });
   const adrsFor = id => adrSets.filter(([, s]) => s.has(id)).map(([k]) => k).sort(refCompare);
 
-  const uatVerifies = linksByParagraph(prd, /^UAT-/, REQ_RE);
-  const arTrace = linksByParagraph(sdd, /^AR-/, REQ_RE);
+  const uatVerifies = linksWithin(prd, /^UAT-/, REQ_RE);
+  const arTrace = linksWithin(sdd, /^AR-/, REQ_RE);
 
   const uatsForReq = new Map();
   for (const [uat, reqs] of uatVerifies) {
