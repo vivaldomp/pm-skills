@@ -6,12 +6,16 @@ function extractIds(text) {
   return [...new Set((text || '').match(re) || [])];
 }
 
+function mentions(text, id) {
+  return new RegExp('\\b' + id + '\\b').test(text);
+}
+
 function buildMatrix({ prd = '', sdd = '', adrs = {} } = {}) {
   const prdIds = extractIds(prd).filter(id => /^(FR|BR|NFR)-/.test(id));
   return prdIds.map(id => ({
     id,
-    inSdd: sdd.includes(id),
-    adrs: Object.entries(adrs).filter(([, txt]) => txt.includes(id)).map(([a]) => a),
+    inSdd: mentions(sdd, id),
+    adrs: Object.entries(adrs).filter(([, txt]) => mentions(txt, id)).map(([a]) => a),
   }));
 }
 

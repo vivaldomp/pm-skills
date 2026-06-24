@@ -27,3 +27,10 @@ test('renderMatrixMarkdown and Html include the id', () => {
   assert.match(t.renderMatrixHtml(rows), /<table/);
   assert.match(t.renderMatrixHtml(rows), /FR-001/);
 });
+
+test('buildMatrix does not match a longer id by substring', () => {
+  const rows = t.buildMatrix({ prd: 'FR-001 x', sdd: 'Implements FR-0012 only.', adrs: { 'ADR-009': 'touches FR-0012' } });
+  const fr = rows.find(r => r.id === 'FR-001');
+  assert.equal(fr.inSdd, false);
+  assert.deepEqual(fr.adrs, []);
+});
