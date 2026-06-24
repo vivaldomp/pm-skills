@@ -65,11 +65,15 @@ A *reference* is a base ID plus optional continuations:
 | Canonical | `FR-001` | `FR-001` |
 | Sub-ID | `FR-003a`, `FR-006a` | `FR-003a` (distinct from `FR-003`) |
 | Ellipsis range | `FR-001…FR-042`, `FR-036…042` | `FR-001`…`FR-042` (numeric span) |
-| Dotted/hyphen range | `FR-001..005`, `FR-001-005` | `FR-001`…`FR-005` |
+| Dotted range | `FR-001..005` | `FR-001`…`FR-005` |
 | Slash/comma list | `FR-001/002/003a`, `FR-010a/b` | each member; bare tails inherit the prefix |
 
 Rules:
 
+- Range operators are the ellipsis (`…` or `...`) and the dotted form (`..`). A bare
+  hyphen is **not** a range operator — it is ambiguous with the hyphen inside an ID
+  (`FR-001`) and never appears in the project's real notation. List operators are `/`
+  and `,`.
 - Ranges expand **numeric base IDs only**; sub-IDs are explicit members, never
   auto-spanned. A range endpoint with a sub-ID suffix (e.g. `FR-001a…003`) expands from
   the numeric base, ignoring the suffix for span purposes.
