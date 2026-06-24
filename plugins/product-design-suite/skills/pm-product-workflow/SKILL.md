@@ -1,6 +1,6 @@
 ---
 name: pm-product-workflow
-description: Orchestrate the end-to-end product design workflow (PRD then SDD then ADR). Use when the user wants to start designing a product, run the full product-spec workflow, or is unsure which document to write next. Initializes .product/, enforces the question cadence, and dispatches to the prd/sdd/adr builders and doc-sync.
+description: Orchestrate the end-to-end product design workflow (PRD then optional SRS then optional SAD then SDD then ADR). Use when the user wants to start designing a product, run the full product-spec workflow, or is unsure which document to write next. Initializes .product/, enforces the question cadence, and dispatches to the prd/srs/sad/sdd/adr builders and doc-sync.
 metadata:
   author: Vivaldo
   version: "0.1.0"
