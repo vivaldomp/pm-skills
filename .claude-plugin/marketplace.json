@@ -1,0 +1,11 @@
+{
+  "name": "lpp-skills",
+  "owner": { "name": "Vivaldo", "email": "vivaldomp@gmail.com" },
+  "plugins": [
+    {
+      "name": "product-design-suite",
+      "source": "./plugins/product-design-suite",
+      "description": "Guided PRD/SDD/ADR product-design workflow with cross-document sync and framework-free HTML visualizations."
+    }
+  ]
+}

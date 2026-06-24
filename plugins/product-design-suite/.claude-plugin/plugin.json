@@ -1,0 +1,6 @@
+{
+  "name": "product-design-suite",
+  "version": "0.1.0",
+  "description": "Drives a Product Manager through a sequential PRD -> SDD -> ADR workflow: gap-only questioning, cross-document sync, and lightweight framework-free HTML diagrams and UI mockups, stored in .product/.",
+  "author": { "name": "Vivaldo", "email": "vivaldomp@gmail.com" }
+}
