@@ -24,8 +24,13 @@ Drive the sequential PRD -> SDD -> ADR workflow.
    gaps).
 4. **Dispatch** to the appropriate builder skill for the current stage.
 5. **Preview (optional)** during iteration: start the live preview server with
-   `bash "${CLAUDE_PLUGIN_ROOT}/scripts/start-server.sh"` to show diagrams/
-   mockups in a browser tab; stop it with `stop-server.sh` when done.
+   `bash "${CLAUDE_PLUGIN_ROOT}/scripts/start-server.sh"`. Render SDD diagrams for
+   review by extracting their inline Mermaid into a self-contained page —
+   `node "${CLAUDE_PLUGIN_ROOT}/scripts/mermaid-preview.js" .product/sdd/sdd.md <content>/sdd-diagrams.html`
+   — and OpenUI mockups via `openui-render.js`. The diagram preview HTML should be
+   written into the preview server's session content directory (the directory the
+   server serves), not into `.product/` proper. Stop the server with
+   `bash "${CLAUDE_PLUGIN_ROOT}/scripts/stop-server.sh"` when done.
 6. **Sync after edits**: whenever a document is created or changed, run
    `pm-doc-sync` to propagate impacts and refresh the traceability matrix.
 7. **Advance** to the next stage when the current document is finalized.

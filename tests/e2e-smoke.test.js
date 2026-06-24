@@ -5,7 +5,7 @@ const os = require('node:os');
 const path = require('node:path');
 const t = require('../plugins/product-design-suite/scripts/traceability.js');
 const o = require('../plugins/product-design-suite/scripts/openui-render.js');
-const d = require('../plugins/product-design-suite/scripts/diagram-render.js');
+const d = require('../plugins/product-design-suite/scripts/mermaid-preview.js');
 
 test('traceability over a sample .product links PRD->SDD->ADR', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'prod-'));
@@ -24,7 +24,7 @@ test('traceability over a sample .product links PRD->SDD->ADR', () => {
 
 test('renderers produce self-contained html', () => {
   const ui = o.renderOpenUI('root = Section([h])\nh = Heading("Hi")');
-  const dg = d.renderDiagram({ title: 'X', nodes: [{ id: 'a', label: 'A' }], edges: [] });
+  const dg = d.renderPreview(d.extractMermaidBlocks('```mermaid\nflowchart TD\n A-->B\n```'), { mermaidJs: '/*m*/' });
   for (const html of [ui, dg]) {
     assert.match(html, /<!DOCTYPE html>/);
     assert.ok(!/(src|href)=("|')https?:\/\//.test(html));

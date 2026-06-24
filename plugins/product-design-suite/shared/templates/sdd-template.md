@@ -75,23 +75,43 @@
 
 ### System Context Diagram
 
-```text
-+----------------+      +----------------+      +----------------+
-| External actor | ---> | Target system  | ---> | External system|
-+----------------+      +----------------+      +----------------+
+```mermaid
+C4Context
+  title <System> — System Context
+  Person(user, "<User>", "<role>")
+  System(sys, "<System>", "<purpose>")
+  System_Ext(ext, "<External System>", "<purpose>")
+  Rel(user, sys, "<uses>")
+  Rel(sys, ext, "<calls>")
 ```
-
-### C4 Context Diagram
-
-<Insert or reference the C4 context diagram.>
 
 ### C4 Container Diagram
 
-<Insert or reference the C4 container diagram.>
+```mermaid
+C4Container
+  title <System> — Containers
+  Person(user, "<User>")
+  System_Boundary(b, "<System>") {
+    Container(web, "<Web App>", "<tech>", "<role>")
+    Container(api, "<API>", "<tech>", "<role>")
+    ContainerDb(db, "<Database>", "<tech>")
+  }
+  Rel(user, web, "<uses>")
+  Rel(web, api, "<calls>", "JSON/HTTPS")
+  Rel(api, db, "<reads/writes>")
+```
 
 ### C4 Component Diagram
 
-<Insert or reference the C4 component diagram.>
+```mermaid
+C4Component
+  title <Container> — Components
+  Container_Boundary(b, "<Container>") {
+    Component(ctrl, "<Controller>", "<tech>", "<role>")
+    Component(svc, "<Service>", "<tech>", "<role>")
+  }
+  Rel(ctrl, svc, "<calls>")
+```
 
 ### Deployment Landscape
 
@@ -227,15 +247,38 @@
 
 ### Sequence Diagrams
 
-<Insert or reference sequence diagrams for critical flows.>
+```mermaid
+sequenceDiagram
+  actor User
+  participant API
+  participant DB
+  User->>API: <request>
+  API->>DB: <query>
+  DB-->>API: <result>
+  API-->>User: <response>
+```
 
 ### Activity Diagrams
 
-<Insert or reference activity diagrams for business or technical processes.>
+```mermaid
+flowchart TD
+  start([Start]) --> step[<Step>]
+  step --> decision{<Condition?>}
+  decision -->|Yes| done([End])
+  decision -->|No| step
+```
 
 ### State Diagrams
 
-<Describe state transitions, terminal states, retries, and invalid transitions.>
+```mermaid
+stateDiagram-v2
+  [*] --> Pending
+  Pending --> Running: <start>
+  Running --> Succeeded: <ok>
+  Running --> Failed: <error>
+  Succeeded --> [*]
+  Failed --> [*]
+```
 
 ### Orchestration
 
