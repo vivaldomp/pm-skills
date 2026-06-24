@@ -32,3 +32,22 @@ test('sad-template documents the AR table and C4/architecture sections', () => {
   assert.match(s, /AR-001/);
   assert.match(s, /C4Context/);
 });
+
+test('pm-sad-builder skill exists with valid front-matter (name == dir)', () => {
+  const s = read('skills/pm-sad-builder/SKILL.md');
+  assert.match(s, /^---\nname: pm-sad-builder\n/);
+  assert.match(s, /\ndescription:/);
+});
+
+test('pm-sad-builder documents authoring, AR ownership, derive-then-confirm, and SDD migration', () => {
+  const s = read('skills/pm-sad-builder/SKILL.md');
+  assert.match(s, /\.product\/sad\/sad\.md/);
+  assert.match(s, /AR-NNN/);
+  assert.match(s, /derive-then-confirm/i);
+  assert.match(s, /migrat/i);
+});
+
+test('pm-sad command exists and routes to the skill', () => {
+  const s = read('commands/pm-sad.md');
+  assert.match(s, /pm-sad/);
+});
