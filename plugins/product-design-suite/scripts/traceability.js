@@ -36,8 +36,8 @@ function expandRange(startId, endId) {
   if (!a || !b || a[1] !== b[1]) return [startId, endId];
   const start = parseInt(a[2], 10), end = parseInt(b[2], 10);
   const width = Math.max(a[2].length, b[2].length);
-  if (end < start || (end - start) > MAX_SPAN) {
-    if ((end - start) > MAX_SPAN) {
+  if (end < start || (end - start) >= MAX_SPAN) {
+    if ((end - start) >= MAX_SPAN) {
       console.warn(`traceability: range ${startId}..${endId} exceeds ${MAX_SPAN}; emitting endpoints only`);
     }
     return [startId, endId];

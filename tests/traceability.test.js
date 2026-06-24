@@ -126,3 +126,8 @@ test('injectCoverage preserves content outside the markers', () => {
   assert.match(out, /FRESH/);
   assert.ok(!out.includes('OLD'));
 });
+
+test('expandRange allows a 200-id span and caps at 201', () => {
+  assert.equal(t.expandRange('FR-001', 'FR-200').length, 200);
+  assert.deepEqual(t.expandRange('FR-001', 'FR-201'), ['FR-001', 'FR-201']);
+});
