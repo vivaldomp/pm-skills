@@ -32,3 +32,14 @@ test('escapes HTML in text', () => {
   assert.ok(!/<script>x<\/script>/.test(html));
   assert.match(html, /&lt;script&gt;/);
 });
+
+test('Link blocks javascript: scheme', () => {
+  const html = o.renderOpenUI('root = Link("x", "javascript:alert(1)")');
+  assert.ok(!/javascript:/i.test(html), 'javascript: scheme must not appear');
+  assert.match(html, /href="#"/);
+});
+
+test('Link allows normal relative paths', () => {
+  const html = o.renderOpenUI('root = Link("Home", "/home")');
+  assert.match(html, /href="\/home"/);
+});

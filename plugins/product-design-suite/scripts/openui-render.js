@@ -1,5 +1,5 @@
 function esc(s) {
-  return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
 // --- expression parser: string | number | bool | null | array | object | call | ref ---
@@ -70,7 +70,11 @@ const COMPONENTS = {
   Grid: (a, d) => `<div class="ui-grid">${kids(a[0], d)}</div>`,
   Card: (a, d) => `<div class="ui-card">${a.map(x => renderNode(x, d)).join('')}</div>`,
   Navbar: (a, d) => `<nav class="ui-nav"><span class="ui-brand">${txt(a[0], d)}</span><span class="ui-links">${kids(a[1], d)}</span></nav>`,
-  Link: (a, d) => `<a class="ui-link" href="${txt(a[1], d) || '#'}">${txt(a[0], d)}</a>`,
+  Link: (a, d) => {
+    const raw = txt(a[1], d);
+    const safe = /^(?:https?:|mailto:|#|\/|\.\/|\.\.\/)/i.test(raw) ? raw : '#';
+    return `<a class="ui-link" href="${safe}">${txt(a[0], d)}</a>`;
+  },
   StatCard: (a, d) => `<div class="ui-stat"><div class="ui-stat-label">${txt(a[0], d)}</div><div class="ui-stat-value">${txt(a[1], d)}</div><div class="ui-stat-trend">${txt(a[2], d)}</div></div>`,
   Heading: (a, d) => `<h2 class="ui-heading">${txt(a[0], d)}</h2>`,
   Text: (a, d) => `<p class="ui-text">${txt(a[0], d)}</p>`,
