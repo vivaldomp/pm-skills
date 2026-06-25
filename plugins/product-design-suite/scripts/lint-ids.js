@@ -5,9 +5,11 @@ const fs = require('node:fs');
 const path = require('node:path');
 const C = require('./id-conventions.js');
 
-// "ID-shaped": a known prefix, a dash, then letters/digits/underscores — broad
-// on purpose so we catch near-misses (NFR_P1, FR-01X) the canonical regex drops.
-const SHAPED_RE = new RegExp('\\b(?:' + C.PREFIXES.join('|') + ')[-_][A-Za-z0-9]+', 'g');
+// "ID-shaped": a known prefix, a separator, optional category letters, then a
+// REQUIRED digit — broad enough to catch near-misses (NFR_P1, FR-01X) the
+// canonical regex drops, but a required digit avoids flagging prose like
+// "C-suite"/"C-section" (the single-letter C prefix would otherwise match).
+const SHAPED_RE = new RegExp('\\b(?:' + C.PREFIXES.join('|') + ')[-_][A-Za-z]{0,2}\\d[A-Za-z0-9]*', 'g');
 
 function lintText(text) {
   const shaped = String(text || '').match(SHAPED_RE) || [];

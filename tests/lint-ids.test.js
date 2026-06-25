@@ -17,6 +17,17 @@ test('lintText passes clean canonical text', () => {
   assert.deepEqual(l.lintText('FR-001 BR-007 NFR-P1 AR-002 C-8 UAT-003 ADR-004').malformed, []);
 });
 
+test('lintText ignores prose words sharing the single-letter C prefix', () => {
+  assert.deepEqual(l.lintText('Briefed the C-suite and C-level execs about C-section.').malformed, []);
+});
+
+test('lintText still flags digit-bearing near-misses amid prose', () => {
+  const r = l.lintText('The C-suite reviewed NFR_P1 and FR-01X.');
+  assert.ok(r.malformed.includes('NFR_P1'));
+  assert.ok(r.malformed.includes('FR-01X'));
+  assert.ok(!r.malformed.includes('C-suite'));
+});
+
 test('lintProduct detects duplicate IDs across files', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'lint-'));
   try {

@@ -8,7 +8,7 @@ const trace = require('./traceability.js');
 const { lintProduct } = require('./lint-ids.js');
 
 function readFrontMatter(text) {
-  const m = String(text || '').match(/^---\n([\s\S]*?)\n---/);
+  const m = String(text || '').match(/^---\r?\n([\s\S]*?)\r?\n---/);
   if (!m) return {};
   const fm = {};
   for (const line of m[1].split('\n')) {
