@@ -25,7 +25,7 @@ To build software robustly from ideation to production, the optimized sequence l
 ------------------------------
 ## Other Minor Elements to Consider (Depending on Team Size)
 
-* UI/UX Wireframes/Figma Prototypes: These should sit alongside the PRD and SRS. Technical teams cannot effectively write an SRS or SDD without knowing the intended user interaction flow. [8] 
+* UI/UX Wireframes/Figma Prototypes: These should sit alongside the PRD and SRS. Technical teams cannot effectively write an SRS or SDD without knowing the intended user interaction flow.
 * Test Plan / BDD Specifications: Often written concurrently with the SRS to define exactly how the engineering team will validate that the requirements have been successfully built.
 
 # How to SAD fit into current transition
@@ -45,8 +45,8 @@ To understand how it fits, look at how the level of abstraction shifts as you mo
 
 
    1. Input from SRS to SAD: The SAD looks at your SRS—specifically the Non-Functional Requirements (NFRs) like scalability, security, performance, and expected user load.
-   2. The SAD's Job: The architect uses the SAD to answer major structural questions: Should we use microservices or a monolith? Do we use a relational database or NoSQL? Where will this be hosted (AWS, Azure)? How will data flow between systems? [1, 2] 
-   3. Output from SAD to SDD: Once the SAD defines the overall layout (e.g., "We will have an Auth Service, a Payment Service, and a PostgreSQL database"), the SDD takes over. Developers write an SDD for each specific service to detail the exact API routes, database tables, and class code structure. [3, 4] 
+   2. The SAD's Job: The architect uses the SAD to answer major structural questions: Should we use microservices or a monolith? Do we use a relational database or NoSQL? Where will this be hosted (AWS, Azure)? How will data flow between systems?
+   3. Output from SAD to SDD: Once the SAD defines the overall layout (e.g., "We will have an Auth Service, a Payment Service, and a PostgreSQL database"), the SDD takes over. Developers write an SDD for each specific service to detail the exact API routes, database tables, and class code structure.
 
 ## What Exactly Goes Inside the SAD?
 
@@ -55,14 +55,14 @@ While an SRS lists text requirements and an SDD shows class/database structures,
 A lean, modern SAD includes:
 
 * System Context Diagram: A high-level view showing how your software interacts with users and external third-party systems (e.g., payment gateways, CRM tools).
-* Container/Infrastructure Diagram: Shows the high-level technology choices (e.g., React frontend, Node.js API container, Redis cache, AWS S3 bucket). [5] 
+* Container/Infrastructure Diagram: Shows the high-level technology choices (e.g., React frontend, Node.js API container, Redis cache, AWS S3 bucket).
 * Data Flow & Integration Patterns: Maps out how components talk to each other (e.g., REST APIs, GraphQL, or asynchronous event-driven messaging via Kafka).
 * Security & Compliance Architecture: Details how data is encrypted, how users are authenticated (OAuth2, JWT), and how network perimeters are secured.
 
 ## How SAD Interacts with ADR
 
 As you design your SAD, you will inevitably face hard technical choices (e.g., Choosing PostgreSQL vs. MongoDB).
-Instead of cluttering the SAD with your reasoning, you make the structural choice in the SAD, and you spin up an ADR (Architecture Decision Record) to document the why. [6] 
+Instead of cluttering the SAD with your reasoning, you make the structural choice in the SAD, and you spin up an ADR (Architecture Decision Record) to document the why.
 
 * SAD states: "The system will use an asynchronous event-driven architecture using Apache Kafka."
 * ADR-004 states: "Why we chose Apache Kafka over RabbitMQ (Trade-offs, performance benchmarks, and cost analysis)."
