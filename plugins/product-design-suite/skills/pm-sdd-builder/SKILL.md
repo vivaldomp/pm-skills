@@ -50,7 +50,8 @@ derived from the PRD.
      `node "${CLAUDE_PLUGIN_ROOT}/scripts/mermaid-preview.js" <scratch.md> <preview.html>`
      (use a temporary path like the system temp dir for both the scratch markdown
      and preview HTML, not `.product/`), served via the preview server (`start-server.sh`).
-     Mermaid is vendored locally, so the preview works offline. Iterate until the user approves.
+     Mermaid is vendored locally, so the preview works offline. For a quick look without the preview server, run `node scripts/mermaid-preview.js <draft.md> <out.html>` and open the returned file directly.
+     Iterate until the user approves.
    - **Write** the approved ` ```mermaid ` blocks inline into the relevant `sdd.md`
      sections (§3 Architecture Overview, §7 Flows and Behavior). These inline blocks
      are the source of truth.

@@ -50,6 +50,7 @@ if (require.main === module) {
   const markdown = fs.readFileSync(inPath, 'utf8');
   const mermaidJs = fs.existsSync(VENDOR_MERMAID) ? fs.readFileSync(VENDOR_MERMAID, 'utf8') : '';
   const blocks = extractMermaidBlocks(markdown);
-  fs.writeFileSync(outPath, renderPreview(blocks, { title: path.basename(inPath), mermaidJs }));
-  console.log(`Wrote ${outPath} (${blocks.length} diagram${blocks.length === 1 ? '' : 's'})`);
+  const abs = path.resolve(outPath);
+  fs.writeFileSync(abs, renderPreview(blocks, { title: path.basename(inPath), mermaidJs }));
+  console.log(`Wrote ${abs} (${blocks.length} diagram${blocks.length === 1 ? '' : 's'}) — open this file directly; no server needed.`);
 }

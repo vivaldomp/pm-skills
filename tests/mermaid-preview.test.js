@@ -80,3 +80,13 @@ test('CLI renders a self-contained preview from a markdown file', () => {
   assert.match(html, /class="mermaid"/);
   assert.ok(!/(src|href)=("|')https?:\/\//.test(html));
 });
+
+test('CLI prints the absolute output path for the one-shot render (B2)', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'mp-'));
+  const md = path.join(dir, 'in.md');
+  const out = path.join(dir, 'out.html');
+  fs.writeFileSync(md, '```mermaid\nflowchart TD\nA-->B\n```\n');
+  const res = execFileSync('node', [CLI, md, out], { encoding: 'utf8' });
+  assert.match(res, new RegExp(out.replace(/[.\\]/g, '\\$&')));
+  assert.ok(fs.existsSync(out));
+});

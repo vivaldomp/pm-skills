@@ -42,8 +42,8 @@ SDD owns those as usual — creating this file is what puts the project into "SA
    scratch markdown file and run
    `node "${CLAUDE_PLUGIN_ROOT}/scripts/mermaid-preview.js" <scratch.md> <preview.html>`
    (use a temp path, not `.product/`), served via `start-server.sh`. Mermaid is vendored
-   locally, so the preview works offline. Iterate until the user approves, then write the
-   approved ` ```mermaid ` blocks inline. These inline blocks are the source of truth.
+   locally, so the preview works offline. For a quick look without the preview server, run `node scripts/mermaid-preview.js <draft.md> <out.html>` and open the returned file directly.
+   Iterate until the user approves, then write the approved ` ```mermaid ` blocks inline. These inline blocks are the source of truth.
 6. **Migrate macro-architecture out of the SDD (confirmation-gated).** If `.product/sdd/sdd.md`
    already holds an `AR` table and/or C4 Context+Container diagrams (an SDD authored before the
    SAD existed), propose the migration: lift the §3 `AR-NNN` rows and the Context/Container
