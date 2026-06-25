@@ -59,3 +59,10 @@ test('pm-import documents a machine-readable import-map.json (C1)', () => {
   assert.match(s, /import-map\.json/);
   assert.match(s, /sourceRef|mappedTo|unmapped/);
 });
+
+test('pm-import prescribes per-file ADR default and an import-state file (C2/C3)', () => {
+  const s = read('skills/pm-import/SKILL.md');
+  assert.match(s, /per-file/i);
+  assert.match(s, /ADR-NNN/);
+  assert.match(s, /import-state\.json/);
+});

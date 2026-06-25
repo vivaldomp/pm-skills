@@ -74,6 +74,22 @@ builders consume a structured map instead of re-reading prose:
 
 `status` is one of `derived | partial | gap`.
 
+### Collected ADR handling (C2)
+
+A single `ADR.md` containing N records defaults to **per-file** output:
+split into `.product/adr/ADR-NNN-<slug>.md`, one record per file, preserving
+the original IDs. Note to the user that they may opt to keep a single collected
+file instead.
+
+### Import state (C3)
+
+Record import decisions in `.product/import-state.json` so downstream builders
+read them instead of having them re-passed as arguments:
+
+```json
+{ "sad": true, "adrGranularity": "per-file", "srs": false }
+```
+
 ## Rules
 - Read-only on source: never migrate, move, or edit the user's existing files.
 - An SRS source maps to the SRS template (`.product/srs/srs.md`); reuse its `FR`/`NFR` IDs
