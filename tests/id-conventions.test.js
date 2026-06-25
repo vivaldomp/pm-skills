@@ -12,7 +12,7 @@ test('classify recognizes every canonical prefix incl constraints', () => {
 
 test('parseMember splits category letters from the number', () => {
   assert.deepEqual(c.parseMember('NFR-PR1'), { prefix: 'NFR', cat: 'PR', num: '1', suf: '' });
-  assert.deepEqual(c.parseMember('FR-003a'), { prefix: 'FR', cat: '', num: '3', suf: 'a' });
+  assert.deepEqual(c.parseMember('FR-003a'), { prefix: 'FR', cat: '', num: '003', suf: 'a' });
 });
 
 test('classify returns null for non-ids', () => {
@@ -27,4 +27,9 @@ test('familyOf includes the dash and any category for range expansion', () => {
 
 test('PREFIXES contains constraints', () => {
   assert.ok(c.PREFIXES.includes('C'));
+});
+
+test('parseMember preserves leading zeros in the number', () => {
+  assert.equal(c.parseMember('AR-042').num, '042');
+  assert.equal(c.parseMember('FR-001').num, '001');
 });

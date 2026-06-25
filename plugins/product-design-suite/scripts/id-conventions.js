@@ -17,7 +17,7 @@ const REQ_RE = /^(FR|BR|NFR)-/;
 function parseMember(tok) {
   const m = String(tok == null ? '' : tok).match(MEMBER_RE);
   if (!m) return null;
-  return { prefix: m[1], cat: m[2] || '', num: String(parseInt(m[3], 10)), suf: m[4] || '' };
+  return { prefix: m[1], cat: m[2] || '', num: m[3], suf: m[4] || '' };
 }
 
 function classify(tok) {
