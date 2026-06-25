@@ -82,3 +82,16 @@ test('mermaid-lint is error-level and fails a bad diagram (IMP-6)', () => {
   assert.equal(ml.pass, false);
   assert.equal(r.pass, false);
 });
+
+test('one-directional related-adrs warns but does not fail the gate (IMP-7)', () => {
+  const dir = scaffold();
+  fs.writeFileSync(path.join(dir, 'adr', 'ADR-001-a.md'),
+    '---\nid: ADR-001\nrelated-adrs: [ADR-002]\n---\n# a\n');
+  fs.writeFileSync(path.join(dir, 'adr', 'ADR-002-b.md'),
+    '---\nid: ADR-002\nrelated-adrs: []\n---\n# b\n'); // missing back-link
+  const r = g.runGate(dir);
+  const rel = r.checks.find(c => c.name === 'related-adrs');
+  assert.equal(rel.level, 'warn');
+  assert.equal(rel.pass, false);
+  assert.equal(r.pass, true, 'gate still passes — related-adrs is advisory');
+});

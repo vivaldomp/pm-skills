@@ -68,6 +68,20 @@ function checkReciprocity(adrs) {
   return problems;
 }
 
+// related-adrs should be symmetric: if A lists B, B should list A (advisory).
+function checkRelatedReciprocity(adrs) {
+  const problems = [];
+  for (const [id, fm] of Object.entries(adrs)) {
+    for (const other of (fm['related-adrs'] || [])) {
+      const target = adrs[other];
+      if (!target || !(target['related-adrs'] || []).includes(id)) {
+        problems.push(`${id} lists related-adrs ${other} but ${other} does not list ${id}`);
+      }
+    }
+  }
+  return problems;
+}
+
 function runGate(dir) {
   dir = path.resolve(dir);                       // cwd-safety (IMP-2)
   const product = trace.loadProduct(dir);
@@ -75,6 +89,7 @@ function runGate(dir) {
   const lint = lintProduct(dir);
   const adrs = loadAdrs(dir);
   const recip = checkReciprocity(adrs);
+  const relRecip = checkRelatedReciprocity(adrs);
   const mdCount = countProductMd(dir);
   const drift = structure.validateProduct(dir);
   const mermaidErrs = mermaid.lintProductDiagrams(dir);
@@ -98,11 +113,13 @@ function runGate(dir) {
       detail: mermaidErrs.length
         ? mermaidErrs.map(d => `${path.basename(d.file)}: ${d.errors.join('; ')}`).join(' | ')
         : 'diagrams parse-clean (rule-based)' },
+    { name: 'related-adrs', level: 'warn', pass: relRecip.length === 0,
+      detail: relRecip.join('; ') || 'reciprocal' },
   ];
   return { pass: checks.filter(c => c.level === 'error').every(c => c.pass), checks };
 }
 
-module.exports = { runGate, checkReciprocity, readFrontMatter };
+module.exports = { runGate, checkReciprocity, checkRelatedReciprocity, readFrontMatter };
 
 if (require.main === module) {
   const { pass, checks } = runGate(process.argv[2] || '.product');
