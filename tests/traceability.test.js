@@ -236,3 +236,28 @@ test('buildMatrix reports ID-shaped tokens it could not classify (A3)', () => {
   assert.ok(m.unclassified.includes('NFR_P1'));
   assert.ok(m.unclassified.includes('FR-01X'));
 });
+
+test('parseArTable links AR to Source-column ids even across a period (A2)', () => {
+  const sad = [
+    '### Architectural Requirements',
+    '',
+    '| ID | Requirement | Source | Design Impact |',
+    '| --- | --- | --- | --- |',
+    '| AR-001 | Must scale horizontally. | FR-012, NFR-P1 | Stateless services |',
+    '| AR-002 | Encrypt at rest. | NFR-S4 | KMS-backed storage |',
+  ].join('\n');
+  const map = t.parseArTable(sad);
+  assert.deepEqual(map.get('AR-001'), ['FR-012', 'NFR-P1']);
+  assert.deepEqual(map.get('AR-002'), ['NFR-S4']);
+});
+
+test('buildMatrix folds AR-table sources into AR traces', () => {
+  const sad = [
+    '| ID | Requirement | Source | Design Impact |',
+    '| --- | --- | --- | --- |',
+    '| AR-001 | Scale. | FR-012 | x |',
+  ].join('\n');
+  const m = t.buildMatrix({ prd: 'FR-012 export.', sdd: '## 4\nFR-012', sad });
+  const ar = m.ars.find(a => a.id === 'AR-001');
+  assert.ok(ar.tracesTo.includes('FR-012'));
+});

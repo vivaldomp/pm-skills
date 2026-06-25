@@ -139,6 +139,31 @@ function linksWithin(text, leftRe, rightRe) {
   return out;
 }
 
+// Structurally read an "Architectural Requirements" table: AR id from the ID
+// column, requirement ids from the Source column. Independent of sentence
+// boundaries, unlike linksWithin (feedback A2).
+function parseArTable(markdown) {
+  const lines = String(markdown || '').split(/\r?\n/);
+  const map = new Map();
+  let cols = null; // {id, source} column indices
+  for (const line of lines) {
+    if (!/^\s*\|/.test(line)) { cols = null; continue; }
+    const cells = line.split('|').slice(1, -1).map(c => c.trim());
+    if (cells.every(c => /^:?-+:?$/.test(c) || c === '')) continue; // separator row
+    const lower = cells.map(c => c.toLowerCase());
+    if (lower.includes('id') && lower.includes('source')) {
+      cols = { id: lower.indexOf('id'), source: lower.indexOf('source') };
+      continue;
+    }
+    if (!cols) continue;
+    const arId = (cells[cols.id] || '').match(/^AR-[A-Z]{0,2}\d+[a-z]?/);
+    if (!arId) continue;
+    const reqs = parseRefs(cells[cols.source] || '').filter(id => REQ_RE.test(id));
+    if (reqs.length) map.set(arId[0], reqs);
+  }
+  return map;
+}
+
 function buildMatrix({ prd = '', sdd = '', adrs = {}, srs = '', sad = '' } = {}) {
   // SRS mode: when an SRS is present it is the canonical source of FR/NFR;
   // BR always comes from the PRD. With no SRS, FR/BR/NFR all come from the PRD.
@@ -158,6 +183,12 @@ function buildMatrix({ prd = '', sdd = '', adrs = {}, srs = '', sad = '' } = {})
 
   const uatVerifies = linksWithin(prd, /^UAT-/, REQ_RE);
   const arTrace = linksWithin(arSource, /^AR-/, REQ_RE);
+
+  const arTable = parseArTable(arSource);
+  for (const [ar, reqs] of arTable) {
+    const merged = new Set([...(arTrace.get(ar) || []), ...reqs]);
+    arTrace.set(ar, [...merged].sort(refCompare));
+  }
 
   const uatsForReq = new Map();
   for (const [uat, reqs] of uatVerifies) {
@@ -271,7 +302,7 @@ function loadProduct(dir) {
 }
 
 module.exports = {
-  parseRefs, expandRange, sectionAnchors, buildMatrix,
+  parseRefs, expandRange, sectionAnchors, parseArTable, buildMatrix,
   renderMarkdown, renderHtml, renderCoverageBlock, injectCoverage, loadProduct,
 };
 
