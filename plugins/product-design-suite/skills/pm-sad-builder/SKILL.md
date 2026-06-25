@@ -44,6 +44,15 @@ SDD owns those as usual — creating this file is what puts the project into "SA
    (use a temp path, not `.product/`), served via `start-server.sh`. Mermaid is vendored
    locally, so the preview works offline. For a quick look without the preview server, run `node scripts/mermaid-preview.js <draft.md> <out.html>` and open the returned file directly.
    Iterate until the user approves, then write the approved ` ```mermaid ` blocks inline. These inline blocks are the source of truth.
+
+   **Approval bar by provenance (B1/B3):**
+   - **Net-new diagrams** (authored from scratch) MUST go through the preview loop
+     one at a time until approved.
+   - **Derived diagrams** (faithful conversions of existing source, e.g. from an
+     import or a SAD→SDD lift) MAY be batch-confirmed: present them together and
+     ask for a single approval. Derive-then-confirm covers *section content*; these
+     derived diagrams may be folded into that same confirmation batch. Net-new
+     diagrams remain outside the batch and use the preview loop.
 6. **Migrate macro-architecture out of the SDD (confirmation-gated).** If `.product/sdd/sdd.md`
    already holds an `AR` table and/or C4 Context+Container diagrams (an SDD authored before the
    SAD existed), propose the migration: lift the §3 `AR-NNN` rows and the Context/Container

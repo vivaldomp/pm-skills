@@ -55,6 +55,14 @@ derived from the PRD.
    - **Write** the approved ` ```mermaid ` blocks inline into the relevant `sdd.md`
      sections (§3 Architecture Overview, §7 Flows and Behavior). These inline blocks
      are the source of truth.
+   - **Approval bar by provenance (B1/B3):**
+     - **Net-new diagrams** (authored from scratch) MUST go through the preview loop
+       one at a time until approved.
+     - **Derived diagrams** (faithful conversions of existing source, e.g. from an
+       import or a SAD→SDD lift) MAY be batch-confirmed: present them together and
+       ask for a single approval. Derive-then-confirm covers *section content*; these
+       derived diagrams may be folded into that same confirmation batch. Net-new
+       diagrams remain outside the batch and use the preview loop.
    - **Optionally export** standalone files to `.product/diagrams/{c4,sequence,state,data,deployment,flow}/`
      only if the user wants separate artifacts.
 5. For UI/frontend sections, author OpenUI Lang in `.product/design/*.openui`
