@@ -90,3 +90,10 @@ test('srs and sad templates ship a mode-banner slot (D2)', () => {
   assert.match(read('shared/templates/srs-template.md'), /MODE-BANNER:END/);
   assert.match(read('shared/templates/sad-template.md'), /MODE-BANNER:START/);
 });
+
+test('sdd §9/§10/§14 carry a per-concern status field (D3)', () => {
+  const tpl = read('shared/templates/sdd-template.md');
+  assert.match(tpl, /designed \| partial \| gap \| n\/a/);
+  // appears for each of the three sections
+  assert.ok((tpl.match(/designed \| partial \| gap \| n\/a/g) || []).length >= 3);
+});

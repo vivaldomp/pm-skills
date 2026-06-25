@@ -342,6 +342,15 @@ stateDiagram-v2
 
 ## 9. Observability
 
+**Concern status** (`designed | partial | gap | n/a`):
+
+| Concern | Status | Notes |
+| --- | --- | --- |
+| Logs | <designed | partial | gap | n/a> | <note> |
+| Metrics | <designed | partial | gap | n/a> | <note> |
+| Traces | <designed | partial | gap | n/a> | <note> |
+| Alerts | <designed | partial | gap | n/a> | <note> |
+
 ### Logs
 
 <Describe structured logging, sensitive data handling, log levels, retention, and search needs.>
@@ -373,6 +382,17 @@ stateDiagram-v2
 <Describe diagnostic tools, health endpoints, support queries, and troubleshooting paths.>
 
 ## 10. Resilience and Reliability
+
+**Concern status** (`designed | partial | gap | n/a`):
+
+| Concern | Status | Notes |
+| --- | --- | --- |
+| Retry | <designed | partial | gap | n/a> | <note> |
+| Circuit breakers | <designed | partial | gap | n/a> | <note> |
+| Timeouts | <designed | partial | gap | n/a> | <note> |
+| Fallbacks | <designed | partial | gap | n/a> | <note> |
+| Idempotency | <designed | partial | gap | n/a> | <note> |
+| Disaster recovery | <designed | partial | gap | n/a> | <note> |
 
 ### Retry Policy
 
@@ -502,6 +522,16 @@ stateDiagram-v2
 | <FR/BR/NFR ID> | <Test type> | <Test or suite> | <Planned/implemented/passed> |
 
 ## 14. Operations
+
+**Concern status** (`designed | partial | gap | n/a`):
+
+| Concern | Status | Notes |
+| --- | --- | --- |
+| Runbooks | <designed | partial | gap | n/a> | <note> |
+| Support model | <designed | partial | gap | n/a> | <note> |
+| SLOs/SLAs | <designed | partial | gap | n/a> | <note> |
+| Capacity planning | <designed | partial | gap | n/a> | <note> |
+| Incident response | <designed | partial | gap | n/a> | <note> |
 
 ### Runbooks
 
