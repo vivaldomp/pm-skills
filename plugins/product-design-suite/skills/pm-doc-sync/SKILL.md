@@ -35,9 +35,9 @@ without explicit user confirmation.
      links are symmetric: if ADR-A lists `supersedes: [ADR-B]` but ADR-B lacks
      `superseded-by: [ADR-A]` (or the reciprocal amend link is missing), report
      the asymmetric/dangling link and propose the corrective edit.
-   - Read each ADR's `related-prd`, `related-sdd`, and `related-sad` fields to link
-     decisions to the documents they affect; a changed SAD structural choice propagates
-     to ADRs that list it in `related-sad`.
+   - Read each ADR's `related-prd`, `related-srs`, `related-sdd`, and `related-sad`
+     fields to link decisions to the documents they affect; a changed SAD structural
+     choice propagates to ADRs that list it in `related-sad`.
    - A changed SDD contract -> PRD acceptance criteria that depend on it.
 4. For each impact, propose a **concrete edit** (show the exact before/after).
 5. Apply only the edits the user approves. Re-run step 1 afterward so the matrix

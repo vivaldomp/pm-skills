@@ -74,3 +74,13 @@ test('references document front-matter metadata and relationship fields', () => 
   assert.match(co, /front-matter/i);
   assert.match(co, /amend/i);
 });
+
+test('adr template front-matter includes related-srs (D1)', () => {
+  const tpl = read('shared/templates/adr-template.md');
+  assert.match(tpl, /related-srs:\s*\[\]/);
+});
+
+test('pm-adr-builder and pm-doc-sync mention related-srs', () => {
+  assert.match(read('skills/pm-adr-builder/SKILL.md'), /related-srs/);
+  assert.match(read('skills/pm-doc-sync/SKILL.md'), /related-srs/);
+});
