@@ -38,3 +38,11 @@ test('pm-product-workflow preview step references mermaid-preview', () => {
   const w = read('skills/pm-product-workflow/SKILL.md');
   assert.match(w, /mermaid-preview\.js/);
 });
+
+test('sad/sdd builders distinguish derived vs net-new diagram approval (B1/B3)', () => {
+  for (const skill of ['skills/pm-sad-builder/SKILL.md', 'skills/pm-sdd-builder/SKILL.md']) {
+    const s = read(skill);
+    assert.match(s, /net-new/i);
+    assert.match(s, /batch-confirm|faithful conversion|derived/i);
+  }
+});

@@ -29,7 +29,7 @@ SDD owns those as usual — creating this file is what puts the project into "SA
    from the non-functional requirements (`NFR-NNN`) in the SRS, or the PRD when no SRS exists.
 3. Fill each required section per `questioning-protocol.md`. When authoritative source is
    provided — mapped content from `pm-import`, or source supplied by the user — use
-   **derive-then-confirm mode**: derive the sections, present one confirmation batch, and ask
+   **derive-then-confirm mode**: derive the sections, present one confirmation batch (see the one-confirmation-batch contract in `questioning-protocol.md`), and ask
    only about genuine gaps. Otherwise ask gap questions (pause after every 4 questions and
    summarize remaining gaps).
 4. **Own the `AR-NNN` IDs.** Assign stable, zero-padded Architectural Requirement IDs and keep
@@ -42,8 +42,17 @@ SDD owns those as usual — creating this file is what puts the project into "SA
    scratch markdown file and run
    `node "${CLAUDE_PLUGIN_ROOT}/scripts/mermaid-preview.js" <scratch.md> <preview.html>`
    (use a temp path, not `.product/`), served via `start-server.sh`. Mermaid is vendored
-   locally, so the preview works offline. Iterate until the user approves, then write the
-   approved ` ```mermaid ` blocks inline. These inline blocks are the source of truth.
+   locally, so the preview works offline. For a quick look without the preview server, run `node scripts/mermaid-preview.js <draft.md> <out.html>` and open the returned file directly.
+   Iterate until the user approves, then write the approved ` ```mermaid ` blocks inline. These inline blocks are the source of truth.
+
+   **Approval bar by provenance (B1/B3):**
+   - **Net-new diagrams** (authored from scratch) MUST go through the preview loop
+     one at a time until approved.
+   - **Derived diagrams** (faithful conversions of existing source, e.g. from an
+     import or a SAD→SDD lift) MAY be batch-confirmed: present them together and
+     ask for a single approval. Derive-then-confirm covers *section content*; these
+     derived diagrams may be folded into that same confirmation batch. Net-new
+     diagrams remain outside the batch and use the preview loop.
 6. **Migrate macro-architecture out of the SDD (confirmation-gated).** If `.product/sdd/sdd.md`
    already holds an `AR` table and/or C4 Context+Container diagrams (an SDD authored before the
    SAD existed), propose the migration: lift the §3 `AR-NNN` rows and the Context/Container
@@ -57,6 +66,8 @@ SDD owns those as usual — creating this file is what puts the project into "SA
 8. On finalize, populate the YAML front-matter (`title`, `status`, `version`, `owner`, `date`)
    — bump `version` and refresh `date` on an update — write `.product/sad/sad.md`, and record
    unresolved gaps in §8 Open Questions rather than leaving silent TBDs.
+   Fill the `MODE-BANNER` slot with a concise orientation note (e.g., "This SAD owns the macro-architecture and AR-NNN")
+   to signal the SAD's role in the documentation architecture, or leave it empty if unused.
 9. Suggest running `pm-doc-sync` to refresh the traceability matrix and propagate the new
    `AR` source to the SDD.
 

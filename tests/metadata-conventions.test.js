@@ -74,3 +74,31 @@ test('references document front-matter metadata and relationship fields', () => 
   assert.match(co, /front-matter/i);
   assert.match(co, /amend/i);
 });
+
+test('adr template front-matter includes related-srs (D1)', () => {
+  const tpl = read('shared/templates/adr-template.md');
+  assert.match(tpl, /related-srs:\s*\[\]/);
+});
+
+test('pm-adr-builder and pm-doc-sync mention related-srs', () => {
+  assert.match(read('skills/pm-adr-builder/SKILL.md'), /related-srs/);
+  assert.match(read('skills/pm-doc-sync/SKILL.md'), /related-srs/);
+});
+
+test('srs and sad templates ship a mode-banner slot (D2)', () => {
+  assert.match(read('shared/templates/srs-template.md'), /MODE-BANNER:START/);
+  assert.match(read('shared/templates/srs-template.md'), /MODE-BANNER:END/);
+  assert.match(read('shared/templates/sad-template.md'), /MODE-BANNER:START/);
+});
+
+test('sdd §9/§10/§14 carry a per-concern status field (D3)', () => {
+  const tpl = read('shared/templates/sdd-template.md');
+  assert.match(tpl, /designed \| partial \| gap \| n\/a/);
+  // appears for each of the three sections
+  assert.ok((tpl.match(/designed \| partial \| gap \| n\/a/g) || []).length >= 3);
+});
+
+test('confirmation-batch contract is defined once and referenced by workflow (F1)', () => {
+  assert.match(read('shared/references/questioning-protocol.md'), /one confirmation batch/i);
+  assert.match(read('skills/pm-product-workflow/SKILL.md'), /confirmation batch/i);
+});

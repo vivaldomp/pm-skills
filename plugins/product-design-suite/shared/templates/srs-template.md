@@ -6,6 +6,9 @@ owner: <Name or team>
 date: <YYYY-MM-DD>
 ---
 
+<!-- MODE-BANNER:START — optional orientation note (e.g. "This SRS owns the canonical FR/NFR"); leave as-is if unused -->
+<!-- MODE-BANNER:END -->
+
 # SRS: <System or Initiative Name>
 
 ## 1. Introduction
@@ -65,6 +68,8 @@ date: <YYYY-MM-DD>
 | Interface | Type | Description |
 | --- | --- | --- |
 | <Interface> | <User / Hardware / Software / Communication> | <Description> |
+
+> ID format follows the [canonical ID conventions](../references/id-conventions.md): `FR-001`/`NFR-001` or category-grouped `NFR-P1`.
 
 ### Functional Requirements
 

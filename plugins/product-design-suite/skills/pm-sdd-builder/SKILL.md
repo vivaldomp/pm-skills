@@ -33,7 +33,7 @@ derived from the PRD.
    builder only honors the active mode.
 3. Fill each required section per `questioning-protocol.md`. When authoritative
    source is provided — mapped content from `pm-import`, or source supplied by the
-   user — use **derive-then-confirm mode**: derive the sections, present one confirmation batch, and ask only about genuine gaps. Otherwise ask gap questions
+   user — use **derive-then-confirm mode**: derive the sections, present one confirmation batch (see the one-confirmation-batch contract in `questioning-protocol.md`), and ask only about genuine gaps. Otherwise ask gap questions
    (pause after every 4 questions and summarize remaining gaps).
 4. Author diagrams as **inline Mermaid** in `sdd.md`:
    - **Recommend a set.** Read the PRD/SDD and pick diagram archetypes from the
@@ -50,10 +50,19 @@ derived from the PRD.
      `node "${CLAUDE_PLUGIN_ROOT}/scripts/mermaid-preview.js" <scratch.md> <preview.html>`
      (use a temporary path like the system temp dir for both the scratch markdown
      and preview HTML, not `.product/`), served via the preview server (`start-server.sh`).
-     Mermaid is vendored locally, so the preview works offline. Iterate until the user approves.
+     Mermaid is vendored locally, so the preview works offline. For a quick look without the preview server, run `node scripts/mermaid-preview.js <draft.md> <out.html>` and open the returned file directly.
+     Iterate until the user approves.
    - **Write** the approved ` ```mermaid ` blocks inline into the relevant `sdd.md`
      sections (§3 Architecture Overview, §7 Flows and Behavior). These inline blocks
      are the source of truth.
+   - **Approval bar by provenance (B1/B3):**
+     - **Net-new diagrams** (authored from scratch) MUST go through the preview loop
+       one at a time until approved.
+     - **Derived diagrams** (faithful conversions of existing source, e.g. from an
+       import or a SAD→SDD lift) MAY be batch-confirmed: present them together and
+       ask for a single approval. Derive-then-confirm covers *section content*; these
+       derived diagrams may be folded into that same confirmation batch. Net-new
+       diagrams remain outside the batch and use the preview loop.
    - **Optionally export** standalone files to `.product/diagrams/{c4,sequence,state,data,deployment,flow}/`
      only if the user wants separate artifacts.
 5. For UI/frontend sections, author OpenUI Lang in `.product/design/*.openui`

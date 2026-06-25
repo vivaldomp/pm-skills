@@ -37,7 +37,8 @@ Drive the sequential PRD -> (optional) SRS -> (optional) SAD -> SDD -> ADR workf
 3. **Enforce cadence** from
    `${CLAUDE_PLUGIN_ROOT}/shared/references/questioning-protocol.md` across the
    active builder (gap-only questions; pause after every 4; summarize remaining
-   gaps).
+   gaps). Each builder follows the confirmation batch contract in
+   `shared/references/questioning-protocol.md`.
 4. **Dispatch** to the appropriate builder skill for the current stage.
 5. **Preview (optional)** during iteration: start the live preview server with
    `bash "${CLAUDE_PLUGIN_ROOT}/scripts/start-server.sh"`. Render SDD diagrams for
@@ -45,11 +46,16 @@ Drive the sequential PRD -> (optional) SRS -> (optional) SAD -> SDD -> ADR workf
    `node "${CLAUDE_PLUGIN_ROOT}/scripts/mermaid-preview.js" .product/sdd/sdd.md <content>/sdd-diagrams.html`
    — and OpenUI mockups via `openui-render.js`. The diagram preview HTML should be
    written into the preview server's session content directory (the directory the
-   server serves), not into `.product/` proper. Stop the server with
+   server serves), not into `.product/` proper. For a quick look without the preview server, run `node scripts/mermaid-preview.js <draft.md> <out.html>` and open the returned file directly.
+   Stop the server with
    `bash "${CLAUDE_PLUGIN_ROOT}/scripts/stop-server.sh"` when done.
 6. **Sync after edits**: whenever a document is created or changed, run
    `pm-doc-sync` to propagate impacts and refresh the traceability matrix.
 7. **Advance** to the next stage when the current document is finalized.
+8. **Final consistency check**: before closing a workflow session, run
+   `node scripts/consistency-gate.js .product` to execute traceability,
+   ID linting, and ADR supersede/amend reciprocity in one pass and get a
+   single PASS/FAIL summary.
 
 ## Rules
 - Respect the sequence; the PRD anchors the work, an optional SRS (when present) owns the

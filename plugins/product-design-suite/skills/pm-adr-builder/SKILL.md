@@ -20,14 +20,15 @@ Record one architectural decision per file in `.product/adr/`.
 2. Confirm the decision is significant and scoped to exactly ONE decision.
 3. Fill the ADR template per `questioning-protocol.md`. When authoritative source
    is provided — mapped content from `pm-import`, or source supplied by the user —
-   use **derive-then-confirm mode**: derive the sections, present one confirmation batch, and ask only about genuine gaps. Otherwise ask gap questions (pause after
+   use **derive-then-confirm mode**: derive the sections, present one confirmation batch (see the one-confirmation-batch contract in `questioning-protocol.md`), and ask only about genuine gaps. Otherwise ask gap questions (pause after
    every 4 questions and summarize remaining gaps). Options considered must be real
    alternatives (include "do nothing" when relevant).
 4. Populate the YAML front-matter (`id`, `title`, `status`, `date`, `author`,
    `reviewers`). Link related PRD/SDD/SAD/ADR references in the `related-prd`,
-   `related-sdd`, `related-sad`, and `related-adrs` front-matter fields. When the
-   decision records a structural choice made in the SAD, set `related-sad` (SAD section
-   or `AR-NNN`).
+   `related-srs`, `related-sdd`, `related-sad`, and `related-adrs` front-matter fields.
+   When the decision records a structural choice made in the SAD, set `related-sad` (SAD
+   section or `AR-NNN`). When FR/NFR live in an SRS, link them via `related-srs`
+   (e.g. `["§3 FR-012"]`).
 5. Set `status` to a single enum value (Proposed/Accepted/Superseded/Deprecated/
    Rejected) — never overload it with parentheticals. Record supersede/amend
    relationships in the structured front-matter fields: set `supersedes` or

@@ -213,3 +213,86 @@ test('loadProduct reads sad/sad.md into the sad field', () => {
   const loaded = t.loadProduct(dir);
   assert.match(loaded.sad, /AR-001 from sad/);
 });
+
+test('parseRefs recognizes category-lettered NFR ids (A1)', () => {
+  assert.deepEqual(t.parseRefs('Targets NFR-P1 and NFR-S4 and NFR-PR1.'),
+    ['NFR-P1', 'NFR-PR1', 'NFR-S4']);
+});
+
+test('parseRefs expands a category-lettered range', () => {
+  assert.deepEqual(t.parseRefs('NFR-P1..P3'), ['NFR-P1', 'NFR-P2', 'NFR-P3']);
+});
+
+test('parseRefs recognizes constraint ids (A4 prefix)', () => {
+  assert.ok(t.parseRefs('Bounded by C-1 and C-8.').includes('C-1'));
+});
+
+test('buildMatrix reports ID-shaped tokens it could not classify (A3)', () => {
+  const m = t.buildMatrix({
+    prd: 'Defines FR-001. Also mentions NFR_P1 and FR-01X informally.',
+    sdd: '## 4. Components\nImplements FR-001.',
+    adrs: {},
+  });
+  assert.ok(m.unclassified.includes('NFR_P1'));
+  assert.ok(m.unclassified.includes('FR-01X'));
+});
+
+test('parseArTable links AR to Source-column ids even across a period (A2)', () => {
+  const sad = [
+    '### Architectural Requirements',
+    '',
+    '| ID | Requirement | Source | Design Impact |',
+    '| --- | --- | --- | --- |',
+    '| AR-001 | Must scale horizontally. | FR-012, NFR-P1 | Stateless services |',
+    '| AR-002 | Encrypt at rest. | NFR-S4 | KMS-backed storage |',
+  ].join('\n');
+  const map = t.parseArTable(sad);
+  assert.deepEqual(map.get('AR-001'), ['FR-012', 'NFR-P1']);
+  assert.deepEqual(map.get('AR-002'), ['NFR-S4']);
+});
+
+test('buildMatrix folds AR-table sources into AR traces', () => {
+  const sad = [
+    '| ID | Requirement | Source | Design Impact |',
+    '| --- | --- | --- | --- |',
+    '| AR-001 | Scale. | FR-012 | x |',
+  ].join('\n');
+  const m = t.buildMatrix({ prd: 'FR-012 export.', sdd: '## 4\nFR-012', sad });
+  const ar = m.ars.find(a => a.id === 'AR-001');
+  assert.ok(ar.tracesTo.includes('FR-012'));
+});
+
+test('buildMatrix unions AR-table sources with prose AR traces', () => {
+  const sad = [
+    '| ID | Requirement | Source |',
+    '| --- | --- | --- |',
+    '| AR-001 | Scale. | FR-012 |',
+    '',
+    'AR-001 depends on NFR-01 for latency.',
+  ].join('\n');
+  const m = t.buildMatrix({ prd: 'FR-012 NFR-01.', sdd: '## 4\nFR-012 NFR-01', sad });
+  const ar = m.ars.find(a => a.id === 'AR-001');
+  assert.ok(ar.tracesTo.includes('FR-012'), 'table link');
+  assert.ok(ar.tracesTo.includes('NFR-01'), 'prose link');
+});
+
+test('parseArTable detects ID/Source columns regardless of order', () => {
+  const sad = [
+    '| Source | ID | Requirement |',
+    '| --- | --- | --- |',
+    '| FR-012 | AR-001 | Scale. |',
+  ].join('\n');
+  assert.deepEqual(t.parseArTable(sad).get('AR-001'), ['FR-012']);
+});
+
+test('buildMatrix surfaces constraints and what they trace to (A4)', () => {
+  const m = t.buildMatrix({
+    prd: 'FR-012 export. Constraint C-1 limits payload; relates to FR-012.',
+    sdd: '## 4\nFR-012',
+    adrs: { 'ADR-003.md': 'Honors C-1 in the gateway.' },
+  });
+  const c1 = m.constraints.find(c => c.id === 'C-1');
+  assert.ok(c1, 'C-1 present');
+  assert.ok(c1.tracesTo.includes('FR-012'));
+  assert.ok(c1.adrs.includes('ADR-003'));
+});

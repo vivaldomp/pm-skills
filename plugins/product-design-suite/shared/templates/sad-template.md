@@ -6,6 +6,9 @@ owner: <Name or team>
 date: <YYYY-MM-DD>
 ---
 
+<!-- MODE-BANNER:START — optional orientation note (e.g. "This SAD owns the macro-architecture and AR-NNN"); leave as-is if unused -->
+<!-- MODE-BANNER:END -->
+
 # SAD: <System or Initiative Name>
 
 ## 1. Introduction
@@ -47,6 +50,8 @@ date: <YYYY-MM-DD>
 
 - <Driver 1, sourced from SRS/PRD non-functional requirements: scalability, reliability, security, cost, compliance, time-to-market>
 - <Driver 2>
+
+> AR/constraint IDs follow the [canonical ID conventions](../references/id-conventions.md).
 
 ### Architectural Requirements
 

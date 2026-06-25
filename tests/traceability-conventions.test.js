@@ -29,3 +29,15 @@ test('pm-sdd-builder notes the generated coverage index', () => {
   const s = read('skills/pm-sdd-builder/SKILL.md');
   assert.match(s, /generated|§16/i);
 });
+
+test('id-conventions reference documents prefixes, category-letters and constraints', () => {
+  const s = read('shared/references/id-conventions.md');
+  assert.match(s, /NFR-P1/);          // category-lettered example (A1)
+  assert.match(s, /\bC-\d/);          // constraints (A4)
+  assert.match(s, /FR|BR|NFR|AR|UAT|ADR/);
+});
+
+test('srs and sad templates link to the id-conventions reference', () => {
+  assert.match(read('shared/templates/srs-template.md'), /id-conventions/);
+  assert.match(read('shared/templates/sad-template.md'), /id-conventions/);
+});
