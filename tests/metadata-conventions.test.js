@@ -91,11 +91,12 @@ test('srs and sad templates ship a mode-banner slot (D2)', () => {
   assert.match(read('shared/templates/sad-template.md'), /MODE-BANNER:START/);
 });
 
-test('sdd §9/§10/§14 carry a per-concern status field (D3)', () => {
+test('sdd §9/§10/§14 carry a per-concern status field with planned (D3, IMP-5)', () => {
   const tpl = read('shared/templates/sdd-template.md');
-  assert.match(tpl, /designed \| partial \| gap \| n\/a/);
-  // appears for each of the three sections
-  assert.ok((tpl.match(/designed \| partial \| gap \| n\/a/g) || []).length >= 3);
+  assert.match(tpl, /designed \| partial \| gap \| planned \| n\/a/);
+  assert.ok((tpl.match(/designed \| partial \| gap \| planned \| n\/a/g) || []).length >= 3);
+  // old four-value enum must be fully replaced
+  assert.ok(!/designed \| partial \| gap \| n\/a/.test(tpl.replace(/designed \| partial \| gap \| planned \| n\/a/g, '')));
 });
 
 test('confirmation-batch contract is defined once and referenced by workflow (F1)', () => {

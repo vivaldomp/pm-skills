@@ -342,14 +342,14 @@ stateDiagram-v2
 
 ## 9. Observability
 
-**Concern status** (`designed | partial | gap | n/a`):
+**Concern status** (`designed | partial | gap | planned | n/a`) — `planned` = designed but not yet built; `gap` = design missing:
 
 | Concern | Status | Notes |
 | --- | --- | --- |
-| Logs | <designed | partial | gap | n/a> | <note> |
-| Metrics | <designed | partial | gap | n/a> | <note> |
-| Traces | <designed | partial | gap | n/a> | <note> |
-| Alerts | <designed | partial | gap | n/a> | <note> |
+| Logs | <designed | partial | gap | planned | n/a> | <note> |
+| Metrics | <designed | partial | gap | planned | n/a> | <note> |
+| Traces | <designed | partial | gap | planned | n/a> | <note> |
+| Alerts | <designed | partial | gap | planned | n/a> | <note> |
 
 ### Logs
 
@@ -383,16 +383,16 @@ stateDiagram-v2
 
 ## 10. Resilience and Reliability
 
-**Concern status** (`designed | partial | gap | n/a`):
+**Concern status** (`designed | partial | gap | planned | n/a`) — `planned` = designed but not yet built; `gap` = design missing:
 
 | Concern | Status | Notes |
 | --- | --- | --- |
-| Retry | <designed | partial | gap | n/a> | <note> |
-| Circuit breakers | <designed | partial | gap | n/a> | <note> |
-| Timeouts | <designed | partial | gap | n/a> | <note> |
-| Fallbacks | <designed | partial | gap | n/a> | <note> |
-| Idempotency | <designed | partial | gap | n/a> | <note> |
-| Disaster recovery | <designed | partial | gap | n/a> | <note> |
+| Retry | <designed | partial | gap | planned | n/a> | <note> |
+| Circuit breakers | <designed | partial | gap | planned | n/a> | <note> |
+| Timeouts | <designed | partial | gap | planned | n/a> | <note> |
+| Fallbacks | <designed | partial | gap | planned | n/a> | <note> |
+| Idempotency | <designed | partial | gap | planned | n/a> | <note> |
+| Disaster recovery | <designed | partial | gap | planned | n/a> | <note> |
 
 ### Retry Policy
 
@@ -523,15 +523,15 @@ stateDiagram-v2
 
 ## 14. Operations
 
-**Concern status** (`designed | partial | gap | n/a`):
+**Concern status** (`designed | partial | gap | planned | n/a`) — `planned` = designed but not yet built; `gap` = design missing:
 
 | Concern | Status | Notes |
 | --- | --- | --- |
-| Runbooks | <designed | partial | gap | n/a> | <note> |
-| Support model | <designed | partial | gap | n/a> | <note> |
-| SLOs/SLAs | <designed | partial | gap | n/a> | <note> |
-| Capacity planning | <designed | partial | gap | n/a> | <note> |
-| Incident response | <designed | partial | gap | n/a> | <note> |
+| Runbooks | <designed | partial | gap | planned | n/a> | <note> |
+| Support model | <designed | partial | gap | planned | n/a> | <note> |
+| SLOs/SLAs | <designed | partial | gap | planned | n/a> | <note> |
+| Capacity planning | <designed | partial | gap | planned | n/a> | <note> |
+| Incident response | <designed | partial | gap | planned | n/a> | <note> |
 
 ### Runbooks
 
