@@ -34,3 +34,14 @@ test('gate fails when an ADR claims a supersede that is not reciprocated', () =>
   assert.equal(r.pass, false);
   assert.ok(r.checks.find(c => c.name === 'adr-reciprocity' && !c.pass));
 });
+
+test('gate passes when quoted ADR IDs in front-matter are matched after quote-stripping', () => {
+  const dir = scaffold();
+  fs.writeFileSync(path.join(dir, 'adr', 'ADR-002-x.md'),
+    '---\nid: ADR-002\nsupersedes: ["ADR-001"]\nsuperseded-by: []\n---\n# x\n');
+  fs.writeFileSync(path.join(dir, 'adr', 'ADR-001-y.md'),
+    '---\nid: ADR-001\nsuperseded-by: ["ADR-002"]\n---\n# y\n');
+  const r = g.runGate(dir);
+  assert.equal(r.pass, true);
+  assert.ok(r.checks.find(c => c.name === 'adr-reciprocity' && c.pass));
+});

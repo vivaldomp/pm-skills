@@ -15,8 +15,9 @@ function readFrontMatter(text) {
     const kv = line.match(/^([\w-]+):\s*(.*)$/);
     if (!kv) continue;
     const val = kv[2].trim();
+    // Accepts simple inline YAML arrays (quoted or unquoted scalar items), not nested/multiline YAML.
     fm[kv[1]] = val.startsWith('[')
-      ? val.replace(/[[\]]/g, '').split(',').map(s => s.trim()).filter(Boolean)
+      ? val.replace(/[[\]]/g, '').split(',').map(s => s.trim().replace(/^['"]|['"]$/g, '')).filter(Boolean)
       : val;
   }
   return fm;
@@ -63,7 +64,7 @@ function runGate(dir) {
       detail: matrix.orphans.length ? `orphans: ${matrix.orphans.join(', ')}` : 'no orphans' },
     { name: 'id-lint', pass: lint.malformed.length === 0,
       detail: `${lint.malformed.length} malformed, ${lint.duplicates.length} duplicate` },
-    { name: 'unclassified', pass: matrix.unclassified.length === 0,
+    { name: 'unclassified', pass: matrix.unclassified.length === 0,  // intentional 4th check: surfaces IDs buildMatrix couldn't classify
       detail: matrix.unclassified.join(', ') || 'none' },
     { name: 'adr-reciprocity', pass: recip.length === 0,
       detail: recip.join('; ') || 'reciprocal' },
