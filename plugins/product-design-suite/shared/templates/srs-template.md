@@ -66,6 +66,8 @@ date: <YYYY-MM-DD>
 | --- | --- | --- |
 | <Interface> | <User / Hardware / Software / Communication> | <Description> |
 
+> ID format follows the [canonical ID conventions](../references/id-conventions.md): `FR-001`/`NFR-001` or category-grouped `NFR-P1`.
+
 ### Functional Requirements
 
 | ID | Requirement | Priority | Source | Acceptance Reference |

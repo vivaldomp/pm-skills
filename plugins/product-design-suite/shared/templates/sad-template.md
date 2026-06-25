@@ -48,6 +48,8 @@ date: <YYYY-MM-DD>
 - <Driver 1, sourced from SRS/PRD non-functional requirements: scalability, reliability, security, cost, compliance, time-to-market>
 - <Driver 2>
 
+> AR/constraint IDs follow the [canonical ID conventions](../references/id-conventions.md).
+
 ### Architectural Requirements
 
 | ID | Requirement | Source | Design Impact |
