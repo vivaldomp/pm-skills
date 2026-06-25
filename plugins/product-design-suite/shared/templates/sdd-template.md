@@ -34,8 +34,8 @@ date: <YYYY-MM-DD>
 
 ### Related ADRs
 
-- <ADR-001: Title>
-- <ADR-002: Title>
+- <ADR-NNN: Title>
+- <ADR-NNN: Title>
 
 ### Glossary
 
@@ -66,7 +66,7 @@ date: <YYYY-MM-DD>
 
 | ID | Requirement | Source | Design Impact |
 | --- | --- | --- | --- |
-| AR-001 | <Requirement> | <PRD/ADR/stakeholder> | <Impact> |
+| AR-NNN | <Requirement> | <PRD/ADR/stakeholder> | <Impact> |
 
 ### Technical Constraints
 
@@ -567,7 +567,7 @@ stateDiagram-v2
 
 | ADR | Decision | Status | Related Section |
 | --- | --- | --- | --- |
-| <ADR-001> | <Decision> | <Status> | <SDD section> |
+| <ADR-NNN> | <Decision> | <Status> | <SDD section> |
 
 ## 16. Requirement Coverage Index
 

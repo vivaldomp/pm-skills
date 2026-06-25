@@ -102,3 +102,13 @@ test('confirmation-batch contract is defined once and referenced by workflow (F1
   assert.match(read('shared/references/questioning-protocol.md'), /one confirmation batch/i);
   assert.match(read('skills/pm-product-workflow/SKILL.md'), /confirmation batch/i);
 });
+
+test('templates use non-matching placeholder IDs, not real example IDs (IMP-1a)', () => {
+  const files = ['prd', 'srs', 'sad', 'sdd'].map(n => `shared/templates/${n}-template.md`);
+  // A real-looking example ID = a known prefix + dash + digits (e.g. FR-001).
+  const REAL = /\b(FR|BR|NFR|AR|UAT)-\d+\b/;
+  for (const f of files) {
+    const lines = read(f).split('\n').filter(l => REAL.test(l));
+    assert.deepEqual(lines, [], `${f} should not contain real example IDs like FR-001:\n${lines.join('\n')}`);
+  }
+});
