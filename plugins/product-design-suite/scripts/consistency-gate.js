@@ -80,8 +80,8 @@ function runGate(dir) {
       detail: mdCount > 0 ? `${mdCount} .product doc(s)` : `no .product/*.md found under ${dir}` },
     { name: 'traceability', level: 'error', pass: matrix.orphans.length === 0,
       detail: matrix.orphans.length ? `orphans: ${matrix.orphans.join(', ')}` : 'no orphans' },
-    { name: 'id-lint', level: 'error', pass: lint.malformed.length === 0,
-      detail: `${lint.malformed.length} malformed, ${lint.duplicates.length} duplicate` },
+    { name: 'id-lint', level: 'error', pass: lint.malformed.length === 0 && lint.definitionDuplicates.length === 0,
+      detail: `${lint.malformed.length} malformed, ${lint.definitionDuplicates.length} duplicate-definitions, ${lint.duplicates.length} cross-doc mentions (expected)` },
     { name: 'unclassified', level: 'error', pass: matrix.unclassified.length === 0,  // intentional 4th check: surfaces IDs buildMatrix couldn't classify
       detail: matrix.unclassified.join(', ') || 'none' },
     { name: 'adr-reciprocity', level: 'error', pass: recip.length === 0,

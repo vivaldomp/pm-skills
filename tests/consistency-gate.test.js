@@ -57,3 +57,10 @@ test('every gate check carries an error|warn level (IMP-2)', () => {
   const r = g.runGate(scaffold());
   assert.ok(r.checks.every(c => c.level === 'error' || c.level === 'warn'));
 });
+
+test('id-lint detail labels cross-doc mentions as expected (IMP-8)', () => {
+  const r = g.runGate(scaffold());
+  const idLint = r.checks.find(c => c.name === 'id-lint');
+  assert.match(idLint.detail, /duplicate-definitions/);
+  assert.match(idLint.detail, /cross-doc mentions/);
+});

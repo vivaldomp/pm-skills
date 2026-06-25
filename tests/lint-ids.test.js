@@ -47,3 +47,13 @@ test('lintProduct detects duplicate IDs across files', () => {
     fs.rmSync(dir, { recursive: true });
   }
 });
+
+test('lintProduct separates duplicate table definitions from mentions (IMP-8)', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'lintdef-'));
+  // FR-001 DEFINED (first table cell) in two files; FR-002 only mentioned in prose twice.
+  fs.writeFileSync(path.join(dir, 'a.md'), '| ID | Req |\n| --- | --- |\n| FR-001 | x |\nMentions FR-002.');
+  fs.writeFileSync(path.join(dir, 'b.md'), '| ID | Req |\n| --- | --- |\n| FR-001 | y |\nAlso FR-002.');
+  const r = l.lintProduct(dir);
+  assert.ok(r.definitionDuplicates.find(d => d.id === 'FR-001'), 'FR-001 is a duplicate definition');
+  assert.ok(!r.definitionDuplicates.find(d => d.id === 'FR-002'), 'FR-002 is only a mention, not a definition');
+});
