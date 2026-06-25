@@ -71,3 +71,14 @@ test('structure check is warn-level and never fails the gate (IMP-3)', () => {
   assert.ok(s, 'structure check present');
   assert.equal(s.level, 'warn');
 });
+
+test('mermaid-lint is error-level and fails a bad diagram (IMP-6)', () => {
+  const dir = scaffold();
+  fs.writeFileSync(path.join(dir, 'sdd', 'sdd.md'),
+    '## 4. Components\nImplements FR-001.\n```mermaid\nsequenceDiagram\n  A->>B: a; b\n```\n');
+  const r = g.runGate(dir);
+  const ml = r.checks.find(c => c.name === 'mermaid-lint');
+  assert.equal(ml.level, 'error');
+  assert.equal(ml.pass, false);
+  assert.equal(r.pass, false);
+});

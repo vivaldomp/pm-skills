@@ -7,6 +7,7 @@ const path = require('node:path');
 const trace = require('./traceability.js');
 const { lintProduct } = require('./lint-ids.js');
 const structure = require('./validate-structure.js');
+const mermaid = require('./mermaid-lint.js');
 
 function countProductMd(dir) {
   let n = 0;
@@ -76,6 +77,7 @@ function runGate(dir) {
   const recip = checkReciprocity(adrs);
   const mdCount = countProductMd(dir);
   const drift = structure.validateProduct(dir);
+  const mermaidErrs = mermaid.lintProductDiagrams(dir);
 
   const checks = [
     { name: 'inputs-present', level: 'error', pass: mdCount > 0,
@@ -92,6 +94,10 @@ function runGate(dir) {
       detail: drift.length
         ? drift.map(d => `${d.file}: ${[...d.missing.map(m => 'missing ' + m), ...d.merged.map(m => 'merged ' + m)].join(', ')}`).join('; ')
         : 'matches templates' },
+    { name: 'mermaid-lint', level: 'error', pass: mermaidErrs.length === 0,
+      detail: mermaidErrs.length
+        ? mermaidErrs.map(d => `${path.basename(d.file)}: ${d.errors.join('; ')}`).join(' | ')
+        : 'diagrams parse-clean (rule-based)' },
   ];
   return { pass: checks.filter(c => c.level === 'error').every(c => c.pass), checks };
 }
