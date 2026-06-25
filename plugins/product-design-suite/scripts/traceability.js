@@ -217,10 +217,16 @@ function buildMatrix({ prd = '', sdd = '', adrs = {}, srs = '', sad = '' } = {})
     id, tracesTo: arTrace.get(id) || [], adrs: adrsFor(id),
   }));
 
+  const cSource = [prd, srs, sad, sdd].join('\n');
+  const cTrace = linksWithin(cSource, /^C-/, REQ_RE);
+  const constraints = parseRefs(cSource).filter(id => /^C-/.test(id)).map(id => ({
+    id, tracesTo: cTrace.get(id) || [], adrs: adrsFor(id),
+  }));
+
   const orphans = requirements.filter(r => r.coverage === 'orphan').map(r => r.id);
   const unclassified = [...new Set([prd, sdd, srs, sad, ...Object.values(adrs)]
     .flatMap(txt => lintText(txt).malformed))].sort();
-  return { requirements, ars, uats, orphans, unclassified };
+  return { requirements, ars, uats, orphans, unclassified, constraints };
 }
 
 function fmtSections(secs) {
@@ -239,6 +245,10 @@ function renderCoverageBlock(matrix) {
   if (ars.length) {
     out += '\n**Architectural Requirements**\n\n| AR | Traces to | In ADRs |\n| --- | --- | --- |\n';
     out += ars.map(a => `| ${a.id} | ${a.tracesTo.join(', ') || '—'} | ${a.adrs.join(', ') || '—'} |`).join('\n') + '\n';
+  }
+  if (matrix.constraints && matrix.constraints.length) {
+    out += '\n**Constraints**\n\n| Constraint | Traces to | In ADRs |\n| --- | --- | --- |\n';
+    out += matrix.constraints.map(c => `| ${c.id} | ${c.tracesTo.join(', ') || '—'} | ${c.adrs.join(', ') || '—'} |`).join('\n') + '\n';
   }
   if (uats.length) {
     out += '\n**Acceptance Tests**\n\n| UAT | Verifies |\n| --- | --- |\n';

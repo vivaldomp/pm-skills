@@ -284,3 +284,15 @@ test('parseArTable detects ID/Source columns regardless of order', () => {
   ].join('\n');
   assert.deepEqual(t.parseArTable(sad).get('AR-001'), ['FR-012']);
 });
+
+test('buildMatrix surfaces constraints and what they trace to (A4)', () => {
+  const m = t.buildMatrix({
+    prd: 'FR-012 export. Constraint C-1 limits payload; relates to FR-012.',
+    sdd: '## 4\nFR-012',
+    adrs: { 'ADR-003.md': 'Honors C-1 in the gateway.' },
+  });
+  const c1 = m.constraints.find(c => c.id === 'C-1');
+  assert.ok(c1, 'C-1 present');
+  assert.ok(c1.tracesTo.includes('FR-012'));
+  assert.ok(c1.adrs.includes('ADR-003'));
+});
