@@ -34,3 +34,25 @@ test('writeIndex writes .product/adr/index.md and skips itself on re-run', () =>
   assert.equal(first, second, 'idempotent');
   assert.ok(!/\| undefined \|/.test(second), 'index.md not treated as an ADR');
 });
+
+test('syncSddStatus rewrites only the Status column inside the markers', () => {
+  const adrs = [{ id: 'ADR-001', status: 'Accepted' }, { id: 'ADR-002', status: 'Superseded' }];
+  const sdd = [
+    '## 15. Referenced ADRs', '',
+    a.S_START,
+    '| ADR | Decision | Status | Related Section |',
+    '| --- | --- | --- | --- |',
+    '| ADR-001 | Use Postgres | Proposed | §4 |',
+    '| ADR-002 | Event bus | Proposed | §5 |',
+    a.S_END, '',
+  ].join('\n');
+  const out = a.syncSddStatus(sdd, adrs);
+  assert.match(out, /\| ADR-001 \| Use Postgres \| Accepted \| §4 \|/);
+  assert.match(out, /\| ADR-002 \| Event bus \| Superseded \| §5 \|/);
+  assert.match(out, /Use Postgres/); // authored cells preserved
+});
+
+test('syncSddStatus is a no-op without markers', () => {
+  const sdd = '## 15. Referenced ADRs\n| ADR | Decision | Status |\n| ADR-001 | x | Proposed |\n';
+  assert.equal(a.syncSddStatus(sdd, [{ id: 'ADR-001', status: 'Accepted' }]), sdd);
+});
