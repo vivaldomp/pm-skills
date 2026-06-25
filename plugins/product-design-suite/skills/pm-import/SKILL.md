@@ -46,6 +46,34 @@ afterwards in derive-then-confirm mode.
    `pm-sad-builder`, `pm-sdd-builder`, `pm-adr-builder`) in **derive-then-confirm** mode,
    pre-seeded with that document's mapped content and its gap list.
 
+## Output
+
+### Prose gap report
+
+The gap report is written to `.product/import-gap-report.md`, documenting for each target
+document (PRD, SRS, SAD, SDD, ADR) a mapping of every template section to a status:
+- `derived` — source fully covers the section;
+- `partial` — source covers it incompletely;
+- `gap` — no source material (a genuine question for the builder);
+plus an unmapped source list per document so nothing is silently dropped.
+
+### Machine-readable map
+
+Alongside `.product/import-gap-report.md`, write `.product/import-map.json` so
+builders consume a structured map instead of re-reading prose:
+
+```json
+{
+  "targets": {
+    "prd": [{ "sourceRef": "legacy/spec.md#goals", "status": "derived", "mappedTo": "§2" }],
+    "sdd": [{ "sourceRef": "legacy/arch.md", "status": "partial", "mappedTo": "§4" }]
+  },
+  "unmapped": ["legacy/notes.md#misc"]
+}
+```
+
+`status` is one of `derived | partial | gap`.
+
 ## Rules
 - Read-only on source: never migrate, move, or edit the user's existing files.
 - An SRS source maps to the SRS template (`.product/srs/srs.md`); reuse its `FR`/`NFR` IDs

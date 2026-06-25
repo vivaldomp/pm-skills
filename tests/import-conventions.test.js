@@ -53,3 +53,9 @@ test('pm-doc-sync documents the legacy front-matter migration', () => {
   assert.match(s, /## 1\. Metadata/);
   assert.match(s, /front-matter/i);
 });
+
+test('pm-import documents a machine-readable import-map.json (C1)', () => {
+  const s = read('skills/pm-import/SKILL.md');
+  assert.match(s, /import-map\.json/);
+  assert.match(s, /sourceRef|mappedTo|unmapped/);
+});
