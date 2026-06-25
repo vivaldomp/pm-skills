@@ -226,3 +226,13 @@ test('parseRefs expands a category-lettered range', () => {
 test('parseRefs recognizes constraint ids (A4 prefix)', () => {
   assert.ok(t.parseRefs('Bounded by C-1 and C-8.').includes('C-1'));
 });
+
+test('buildMatrix reports ID-shaped tokens it could not classify (A3)', () => {
+  const m = t.buildMatrix({
+    prd: 'Defines FR-001. Also mentions NFR_P1 and FR-01X informally.',
+    sdd: '## 4. Components\nImplements FR-001.',
+    adrs: {},
+  });
+  assert.ok(m.unclassified.includes('NFR_P1'));
+  assert.ok(m.unclassified.includes('FR-01X'));
+});

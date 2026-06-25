@@ -2,6 +2,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const C = require('./id-conventions.js');
+const { lintText } = require('./lint-ids.js');
 const PREFIX = C.PREFIX;
 const MEMBER = C.MEMBER;
 // A reference group: an anchor member plus a run of continuation operators + members.
@@ -186,7 +187,9 @@ function buildMatrix({ prd = '', sdd = '', adrs = {}, srs = '', sad = '' } = {})
   }));
 
   const orphans = requirements.filter(r => r.coverage === 'orphan').map(r => r.id);
-  return { requirements, ars, uats, orphans };
+  const unclassified = [...new Set([prd, sdd, srs, sad, ...Object.values(adrs)]
+    .flatMap(txt => lintText(txt).malformed))].sort();
+  return { requirements, ars, uats, orphans, unclassified };
 }
 
 function fmtSections(secs) {
@@ -209,6 +212,9 @@ function renderCoverageBlock(matrix) {
   if (uats.length) {
     out += '\n**Acceptance Tests**\n\n| UAT | Verifies |\n| --- | --- |\n';
     out += uats.map(u => `| ${u.id} | ${u.verifies.join(', ') || '—'} |`).join('\n') + '\n';
+  }
+  if (matrix.unclassified && matrix.unclassified.length) {
+    out += `\n> ⚠️ ${matrix.unclassified.length} unclassified ID-shaped token(s) (check ID format): ${matrix.unclassified.join(', ')}\n`;
   }
   return out;
 }
@@ -272,6 +278,9 @@ module.exports = {
 if (require.main === module) {
   const dir = process.argv[2] || '.product';
   const matrix = buildMatrix(loadProduct(dir));
+  if (matrix.unclassified.length) {
+    console.warn(`traceability: saw ${matrix.unclassified.length} token(s) it could not classify: ${matrix.unclassified.join(', ')}`);
+  }
   fs.writeFileSync(path.join(dir, 'traceability.md'), renderMarkdown(matrix));
   fs.writeFileSync(path.join(dir, 'traceability.html'), renderHtml(matrix));
   const sddPath = path.join(dir, 'sdd', 'sdd.md');
