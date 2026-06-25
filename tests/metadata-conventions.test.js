@@ -113,3 +113,15 @@ test('templates use non-matching placeholder IDs, not real example IDs (IMP-1a)'
     assert.deepEqual(lines, [], `${f} should not contain real example IDs like FR-001:\n${lines.join('\n')}`);
   }
 });
+
+test('builders carry the docs/ guard and version-bump heuristic (IMP-9, IMP-11)', () => {
+  for (const b of ['pm-prd-builder', 'pm-srs-builder', 'pm-sad-builder', 'pm-sdd-builder', 'pm-adr-builder']) {
+    const s = read(`skills/${b}/SKILL.md`);
+    assert.match(s, /docs\//, `${b} must mention the docs/ guard`);
+    assert.match(s, /version/i, `${b} must mention version-bump guidance`);
+  }
+});
+
+test('questioning-protocol defines a consolidated decision ledger (IMP-10)', () => {
+  assert.match(read('shared/references/questioning-protocol.md'), /decision[- ]ledger|open decisions/i);
+});
