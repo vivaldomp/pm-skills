@@ -11,6 +11,15 @@ const C = require('./id-conventions.js');
 // "C-suite"/"C-section" (the single-letter C prefix would otherwise match).
 const SHAPED_RE = new RegExp('\\b(?:' + C.PREFIXES.join('|') + ')[-_][A-Za-z]{0,2}\\d[A-Za-z0-9]*', 'g');
 
+// Generated tables (re-emitted by traceability.js / adr-index.js) are NOT authored
+// definitions — excluding them keeps a valid doc set from failing id-lint (feedback 005 #4).
+const GEN_MARKERS = ['COVERAGE-INDEX', 'ADR-INDEX', 'ADR-STATUS'];
+function stripGeneratedBlocks(text) {
+  return GEN_MARKERS.reduce((t, name) =>
+    t.replace(new RegExp('<!--\\s*' + name + ':START[\\s\\S]*?' + name + ':END\\s*-->', 'g'), ' '),
+    String(text == null ? '' : text));
+}
+
 // IDs that appear as the first cell of a Markdown table row = "definitions".
 function tableDefIds(text) {
   const out = [];
@@ -41,7 +50,9 @@ function lintProduct(dir) {
         const text = fs.readFileSync(p, 'utf8');
         const stripped = C.stripCode(text);
         for (const tok of lintText(text).malformed) malformed.push({ file: p, token: tok });
-        for (const id of tableDefIds(stripped)) {
+        // traceability.md is fully generated; other docs may contain generated marker blocks.
+        const defText = ent.name === 'traceability.md' ? '' : stripGeneratedBlocks(stripped);
+        for (const id of tableDefIds(defText)) {
           const set = defSeen.get(id) || new Set();
           set.add(p);
           defSeen.set(id, set);
@@ -66,7 +77,7 @@ function lintProduct(dir) {
   return { malformed, duplicates, definitionDuplicates };
 }
 
-module.exports = { lintText, lintProduct, tableDefIds, SHAPED_RE };
+module.exports = { lintText, lintProduct, tableDefIds, SHAPED_RE, stripGeneratedBlocks };
 
 if (require.main === module) {
   const dir = process.argv[2] || '.product';

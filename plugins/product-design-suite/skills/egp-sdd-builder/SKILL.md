@@ -45,24 +45,29 @@ derived from the PRD.
      with a one-line rationale each and let the user confirm or adjust.
    - **Draft** Mermaid source for each chosen type (`C4Context`/`C4Container`/
      `C4Component`, `sequenceDiagram`, `stateDiagram-v2`, `erDiagram`, `flowchart`).
+     Avoid the conversion footguns: no `;` in `sequenceDiagram` lines, and line breaks
+     in node labels use `<br/>` with the label quoted — never a literal `\n`
+     (feedback 005 #1/#3).
    - **Present for approval.** Show the Mermaid source in the conversation, and
      offer a rendered preview: write the drafts to a scratch markdown file and run
      `node "${CLAUDE_PLUGIN_ROOT}/scripts/mermaid-preview.js" <scratch.md> <preview.html>`
      (use a temporary path like the system temp dir for both the scratch markdown
      and preview HTML, not `.product/`), served via the preview server (`start-server.sh`).
-     Mermaid is vendored locally, so the preview works offline. For a quick look without the preview server, run `node scripts/mermaid-preview.js <draft.md> <out.html>` and open the returned file directly.
+     Mermaid is vendored locally, so the preview works offline.
+     The served preview URL is mandatory for approval; the standalone HTML file
+     (`node scripts/mermaid-preview.js <draft.md> <out.html>`) is only an offline
+     fallback, never a substitute for the reviewer-facing URL.
      Iterate until the user approves.
    - **Write** the approved ` ```mermaid ` blocks inline into the relevant `sdd.md`
      sections (§3 Architecture Overview, §7 Flows and Behavior). These inline blocks
      are the source of truth.
-   - **Approval bar by provenance (B1/B3):**
-     - **Net-new diagrams** (authored from scratch) MUST go through the preview loop
-       one at a time until approved.
-     - **Derived diagrams** (faithful conversions of existing source, e.g. from an
-       import or a SAD→SDD lift) MAY be batch-confirmed: present them together and
-       ask for a single approval. Derive-then-confirm covers *section content*; these
-       derived diagrams may be folded into that same confirmation batch. Net-new
-       diagrams remain outside the batch and use the preview loop.
+   - **Approval bar — ALL diagrams (B1/B3, feedback 005 P0/#6):** Every diagram —
+     net-new and derived alike — MUST be rendered in the preview server and explicitly
+     approved before it is written into `sdd.md`. Derivation is NOT assumed faithful:
+     conversion introduces footguns (semicolons, literal `\n`, quoting). Start the
+     server, print the `http://…` preview URL, and STOP for the reviewer's approval or
+     change requests — do not batch-confirm diagrams and do not write them until
+     approved. (Derive-then-confirm still covers section *text*, never diagrams.)
    - **Optionally export** standalone files to `.product/diagrams/{c4,sequence,state,data,deployment,flow}/`
      only if the user wants separate artifacts.
 5. For UI/frontend sections, author OpenUI Lang in `.product/design/*.openui`
@@ -80,6 +85,9 @@ derived from the PRD.
 ## Rules
 - Every major design choice should map back to a PRD requirement or an ADR.
 - Cover failure modes, security, observability, and operations — not only happy paths.
+- When a template subsection does not apply (e.g. Backend for Frontend), emit its
+  heading with an `n/a` body rather than omitting it, so `validate-structure` stays
+  clean (feedback 005 #9).
 
 ## Guards
 - **`docs/` is read-only.** Never write under `docs/` — it is the import source. All authored

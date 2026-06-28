@@ -42,17 +42,20 @@ SDD owns those as usual — creating this file is what puts the project into "SA
    scratch markdown file and run
    `node "${CLAUDE_PLUGIN_ROOT}/scripts/mermaid-preview.js" <scratch.md> <preview.html>`
    (use a temp path, not `.product/`), served via `start-server.sh`. Mermaid is vendored
-   locally, so the preview works offline. For a quick look without the preview server, run `node scripts/mermaid-preview.js <draft.md> <out.html>` and open the returned file directly.
+   locally, so the preview works offline. The served preview URL is mandatory for
+   approval; the standalone HTML file (`node scripts/mermaid-preview.js <draft.md> <out.html>`)
+   is only an offline fallback, never a substitute for the reviewer-facing URL. Avoid the
+   conversion footguns: no `;` in `sequenceDiagram` lines, and line breaks in node labels use
+   `<br/>` with the label quoted — never a literal `\n` (feedback 005 #1/#3).
    Iterate until the user approves, then write the approved ` ```mermaid ` blocks inline. These inline blocks are the source of truth.
 
-   **Approval bar by provenance (B1/B3):**
-   - **Net-new diagrams** (authored from scratch) MUST go through the preview loop
-     one at a time until approved.
-   - **Derived diagrams** (faithful conversions of existing source, e.g. from an
-     import or a SAD→SDD lift) MAY be batch-confirmed: present them together and
-     ask for a single approval. Derive-then-confirm covers *section content*; these
-     derived diagrams may be folded into that same confirmation batch. Net-new
-     diagrams remain outside the batch and use the preview loop.
+   **Approval bar — ALL diagrams (B1/B3, feedback 005 P0/#6):** Every diagram —
+   net-new and derived alike — MUST be rendered in the preview server and explicitly
+   approved before it is written into `sad.md`. Derivation is NOT assumed faithful:
+   conversion introduces footguns (semicolons, literal `\n`, quoting). Start the
+   server, print the `http://…` preview URL, and STOP for the reviewer's approval or
+   change requests — do not batch-confirm diagrams and do not write them until
+   approved. (Derive-then-confirm still covers section *text*, never diagrams.)
 6. **Migrate macro-architecture out of the SDD (confirmation-gated).** If `.product/sdd/sdd.md`
    already holds an `AR` table and/or C4 Context+Container diagrams (an SDD authored before the
    SAD existed), propose the migration: lift the §3 `AR-NNN` rows and the Context/Container
