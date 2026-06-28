@@ -99,3 +99,7 @@ read them instead of having them re-passed as arguments:
 - Confirmation-gated: confirm classification before mapping, and confirm hand-off.
 - Reuse source IDs (`FR-NNN`, `BR-NNN`, `NFR-NNN`, `UAT-NNN`, `ADR-NNN`) verbatim so
   cross-document traceability is preserved.
+
+## Notes
+- If a skill does not present its steps when invoked, read its `SKILL.md` directly to
+  proceed — invocation output is host-dependent (feedback 005 #7).

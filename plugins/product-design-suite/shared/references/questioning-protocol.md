@@ -55,3 +55,9 @@ defined here once; builders reference it rather than restating it.
 Instead of many separate question rounds, each builder run emits ONE structured
 **"Open decisions + recommended defaults"** block: a single list where every open
 decision shows a recommended default, so the user confirms the whole set in one pass.
+
+## Dates in front-matter
+
+Never fabricate the `date:` field. Use the current date supplied by the workflow or
+conversation; if none is available, ask the user or read the real current date
+(`date +%F`) — do not guess (feedback 005 #8).
