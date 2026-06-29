@@ -517,6 +517,7 @@ stateDiagram-v2
 
 ### Acceptance Traceability
 
+<!-- 006 D: referencing table — cite IDs in a non-first column or wrap in COVERAGE-INDEX markers; do not define IDs here. -->
 | PRD Requirement | Test Type | Test Reference | Status |
 | --- | --- | --- | --- |
 | <FR/BR/NFR ID> | <Test type> | <Test or suite> | <Planned/implemented/passed> |

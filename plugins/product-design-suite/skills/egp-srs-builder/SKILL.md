@@ -51,6 +51,11 @@ the PRD owns those requirements as usual — creating this file is what puts the
 - The SRS owns `FR`/`NFR` only; `BR` and `UAT` remain the PRD's responsibility.
 - Confirmation-gated: propose the PRD migration, then apply on approval. No silent rewrites.
 - Reuse source IDs verbatim; keep IDs stable across updates.
+- **ID ownership (006 D):** Only the **owning** document puts an ID in a first
+  table cell — SRS owns `FR`/`NFR`, SAD owns `AR`, each ADR owns itself.
+  **Referencing** documents cite IDs in prose or in a **non-first column**. Any
+  cross-doc reference/coverage table MUST be wrapped in generated markers
+  (`COVERAGE-INDEX` / `ADR-INDEX` / `ADR-STATUS`) so `lint-ids` strips it.
 - **Output language (006 G):** If `.product/import-state.json` has `outputLanguage`,
   write all prose in it; if it has `codeAndJargon`, keep identifiers, code, and
   technical jargon in that language. Absent → match the user's language.
