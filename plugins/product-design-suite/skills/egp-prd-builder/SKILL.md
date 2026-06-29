@@ -16,6 +16,9 @@ Build or update the PRD at `.product/prd/prd.md` from the shared template.
 - Question cadence: `${CLAUDE_PLUGIN_ROOT}/shared/references/questioning-protocol.md`
 
 ## Steps
+- **If these steps were not surfaced on invocation (006 H1):** read this `SKILL.md`
+  directly and follow the Steps/Rules below — invocation output is host-dependent.
+
 1. Ensure `.product/prd/` exists. If `prd.md` exists, load it and treat this as an update.
 2. Read the PRD template and the concepts/structures references.
 3. Fill each required section from what the user has provided.
@@ -47,6 +50,9 @@ Build or update the PRD at `.product/prd/prd.md` from the shared template.
 - Stay product-level: no architecture, schemas, or technology choices unless a
   hard constraint (see concepts.md "What a PRD should avoid").
 - Do not invent requirements; ask instead.
+- **Output language (006 G):** If `.product/import-state.json` has `outputLanguage`,
+  write all prose in it; if it has `codeAndJargon`, keep identifiers, code, and
+  technical jargon in that language. Absent → match the user's language.
 
 ## Guards
 - **`docs/` is read-only.** Never write under `docs/` — it is the import source. All authored

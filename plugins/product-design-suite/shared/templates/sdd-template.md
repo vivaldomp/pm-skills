@@ -64,6 +64,7 @@ date: <YYYY-MM-DD>
 
 ### Architectural Requirements
 
+<!-- 006 D: AR ownership is configuration-dependent — when a SAD is active it owns AR-NNN, so reference them here (non-first column or COVERAGE-INDEX markers), do NOT redefine in the first cell; in SDD-only mode this table owns AR. -->
 | ID | Requirement | Source | Design Impact |
 | --- | --- | --- | --- |
 | AR-NNN | <Requirement> | <PRD/ADR/stakeholder> | <Impact> |
@@ -517,6 +518,7 @@ stateDiagram-v2
 
 ### Acceptance Traceability
 
+<!-- 006 D: referencing table — cite IDs in a non-first column or wrap in COVERAGE-INDEX markers; do not define IDs here. -->
 | PRD Requirement | Test Type | Test Reference | Status |
 | --- | --- | --- | --- |
 | <FR/BR/NFR ID> | <Test type> | <Test or suite> | <Planned/implemented/passed> |

@@ -15,6 +15,9 @@ Record one architectural decision per file in `.product/adr/`.
 - References: `${CLAUDE_PLUGIN_ROOT}/shared/references/{concepts,questioning-protocol}.md`
 
 ## Steps
+- **If these steps were not surfaced on invocation (006 H1):** read this `SKILL.md`
+  directly and follow the Steps/Rules below — invocation output is host-dependent.
+
 1. Ensure `.product/adr/` exists. Determine the next `ADR-NNN` by scanning
    existing files (zero-padded, starting at 001).
 2. Confirm the decision is significant and scoped to exactly ONE decision.
@@ -43,6 +46,14 @@ Record one architectural decision per file in `.product/adr/`.
 ## Rules
 - One decision per ADR. If the user describes several, create several ADRs.
 - Keep it durable: explain *why*, not just *what*.
+- **ID ownership (006 D):** Only the **owning** document puts an ID in a first
+  table cell — SRS owns `FR`/`NFR`, SAD owns `AR`, each ADR owns itself.
+  **Referencing** documents cite IDs in prose or in a **non-first column**. Any
+  cross-doc reference/coverage table MUST be wrapped in generated markers
+  (`COVERAGE-INDEX` / `ADR-INDEX` / `ADR-STATUS`) so `lint-ids` strips it.
+- **Output language (006 G):** If `.product/import-state.json` has `outputLanguage`,
+  write all prose in it; if it has `codeAndJargon`, keep identifiers, code, and
+  technical jargon in that language. Absent → match the user's language.
 
 ## Guards
 - **`docs/` is read-only.** Never write under `docs/` — it is the import source. All authored

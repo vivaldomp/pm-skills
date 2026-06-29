@@ -24,6 +24,9 @@ SDD owns those as usual — creating this file is what puts the project into "SA
 - Question cadence: `${CLAUDE_PLUGIN_ROOT}/shared/references/questioning-protocol.md`
 
 ## Steps
+- **If these steps were not surfaced on invocation (006 H1):** read this `SKILL.md`
+  directly and follow the Steps/Rules below — invocation output is host-dependent.
+
 1. Ensure `.product/sad/` exists. If `sad.md` exists, load it and treat this as an update.
 2. Read the SAD template, the PRD, and the SRS if present. Source the architectural drivers
    from the non-functional requirements (`NFR-NNN`) in the SRS, or the PRD when no SRS exists.
@@ -53,9 +56,13 @@ SDD owns those as usual — creating this file is what puts the project into "SA
    net-new and derived alike — MUST be rendered in the preview server and explicitly
    approved before it is written into `sad.md`. Derivation is NOT assumed faithful:
    conversion introduces footguns (semicolons, literal `\n`, quoting). Start the
-   server, print the `http://…` preview URL, and STOP for the reviewer's approval or
+   server, present the `markdown_link` as a clickable Markdown link, and STOP for the reviewer's approval or
    change requests — do not batch-confirm diagrams and do not write them until
    approved. (Derive-then-confirm still covers section *text*, never diagrams.)
+   Present the preview as a **clickable Markdown link** (the server's `markdown_link`
+   field), never a raw URL. For a portable, un-breakable artifact (006 A2): once the
+   diagrams render in the preview, capture each `<svg>` and assemble a JS-free page
+   with `mermaid-preview.js --static <out.html> <a.svg> ...`.
 6. **Migrate macro-architecture out of the SDD (confirmation-gated).** If `.product/sdd/sdd.md`
    already holds an `AR` table and/or C4 Context+Container diagrams (an SDD authored before the
    SAD existed), propose the migration: lift the §3 `AR-NNN` rows and the Context/Container
@@ -79,6 +86,14 @@ SDD owns those as usual — creating this file is what puts the project into "SA
   schemas, and implementation-level security stay in the SDD.
 - Confirmation-gated: propose the SDD migration, then apply on approval. No silent rewrites.
 - Reuse source IDs verbatim; keep `AR-NNN` IDs stable across updates.
+- **ID ownership (006 D):** Only the **owning** document puts an ID in a first
+  table cell — SRS owns `FR`/`NFR`, SAD owns `AR`, each ADR owns itself.
+  **Referencing** documents cite IDs in prose or in a **non-first column**. Any
+  cross-doc reference/coverage table MUST be wrapped in generated markers
+  (`COVERAGE-INDEX` / `ADR-INDEX` / `ADR-STATUS`) so `lint-ids` strips it.
+- **Output language (006 G):** If `.product/import-state.json` has `outputLanguage`,
+  write all prose in it; if it has `codeAndJargon`, keep identifiers, code, and
+  technical jargon in that language. Absent → match the user's language.
 
 ## Guards
 - **`docs/` is read-only.** Never write under `docs/` — it is the import source. All authored

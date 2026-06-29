@@ -19,6 +19,9 @@ derived from the PRD.
 - References: `${CLAUDE_PLUGIN_ROOT}/shared/references/{concepts,structures,questioning-protocol,openui-guide}.md`
 
 ## Steps
+- **If these steps were not surfaced on invocation (006 H1):** read this `SKILL.md`
+  directly and follow the Steps/Rules below — invocation output is host-dependent.
+
 1. If `.product/prd/prd.md` is missing, warn the user that the SDD should follow
    a PRD, and offer to run `egp-prd-builder` first (do not hard-block).
 2. Read the SDD template and the requirements source. **SRS mode** — when `.product/srs/srs.md`
@@ -65,9 +68,13 @@ derived from the PRD.
      net-new and derived alike — MUST be rendered in the preview server and explicitly
      approved before it is written into `sdd.md`. Derivation is NOT assumed faithful:
      conversion introduces footguns (semicolons, literal `\n`, quoting). Start the
-     server, print the `http://…` preview URL, and STOP for the reviewer's approval or
+     server, present the `markdown_link` as a clickable Markdown link, and STOP for the reviewer's approval or
      change requests — do not batch-confirm diagrams and do not write them until
      approved. (Derive-then-confirm still covers section *text*, never diagrams.)
+     Present the preview as a **clickable Markdown link** (the server's `markdown_link`
+     field), never a raw URL. For a portable, un-breakable artifact (006 A2): once the
+     diagrams render in the preview, capture each `<svg>` and assemble a JS-free page
+     with `mermaid-preview.js --static <out.html> <a.svg> ...`.
    - **Optionally export** standalone files to `.product/diagrams/{c4,sequence,state,data,deployment,flow}/`
      only if the user wants separate artifacts.
 5. For UI/frontend sections, author OpenUI Lang in `.product/design/*.openui`
@@ -88,6 +95,20 @@ derived from the PRD.
 - When a template subsection does not apply (e.g. Backend for Frontend), emit its
   heading with an `n/a` body rather than omitting it, so `validate-structure` stays
   clean (feedback 005 #9).
+- **ID ownership (006 D):** Only the **owning** document puts an ID in a first
+  table cell — SRS owns `FR`/`NFR`, SAD owns `AR`, each ADR owns itself.
+  **Referencing** documents cite IDs in prose or in a **non-first column**. Any
+  cross-doc reference/coverage table MUST be wrapped in generated markers
+  (`COVERAGE-INDEX` / `ADR-INDEX` / `ADR-STATUS`) so `lint-ids` strips it.
+- **Coverage tables are generated (006 D):** Emit requirement-coverage and
+  AR-realization tables inside `COVERAGE-INDEX` markers (generated form), NOT as
+  hand-authored first-cell ID tables. When a SAD is active it owns `AR`, so the SDD
+  references `AR` and does not re-define it in a first cell; in no-SAD mode the SDD
+  owns and defines `AR` as usual. `FR`/`NFR` (owned by the SRS) are never
+  re-defined in a first cell.
+- **Output language (006 G):** If `.product/import-state.json` has `outputLanguage`,
+  write all prose in it; if it has `codeAndJargon`, keep identifiers, code, and
+  technical jargon in that language. Absent → match the user's language.
 
 ## Guards
 - **`docs/` is read-only.** Never write under `docs/` — it is the import source. All authored
