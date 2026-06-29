@@ -239,7 +239,7 @@ function isFullDocument(html) {
 }
 
 function wrapInFrame(content) {
-  return renderBranding(frameTemplate).replace('<!-- CONTENT -->', content);
+  return renderBranding(frameTemplate).replace('<!-- CONTENT -->', () => content);
 }
 
 function getNewestScreen() {
@@ -388,7 +388,7 @@ function handleRequest(req, res) {
       : waitingPage();
 
     if (html.includes('</body>')) {
-      html = html.replace('</body>', helperInjection + '\n</body>');
+      html = html.replace('</body>', () => helperInjection + '\n</body>');
     } else {
       html += helperInjection;
     }
@@ -696,6 +696,7 @@ module.exports = {
   encodeFrame,
   decodeFrame,
   browserLauncherForPlatform,
+  wrapInFrame,
   OPCODES,
   MAX_FRAME_PAYLOAD_BYTES
 };
