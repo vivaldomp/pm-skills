@@ -68,6 +68,10 @@ derived from the PRD.
      server, print the `http://…` preview URL, and STOP for the reviewer's approval or
      change requests — do not batch-confirm diagrams and do not write them until
      approved. (Derive-then-confirm still covers section *text*, never diagrams.)
+     Present the preview as a **clickable Markdown link** (the server's `markdown_link`
+     field), never a raw URL. For a portable, un-breakable artifact (006 A2): once the
+     diagrams render in the preview, capture each `<svg>` and assemble a JS-free page
+     with `mermaid-preview.js --static <out.html> <a.svg> ...`.
    - **Optionally export** standalone files to `.product/diagrams/{c4,sequence,state,data,deployment,flow}/`
      only if the user wants separate artifacts.
 5. For UI/frontend sections, author OpenUI Lang in `.product/design/*.openui`

@@ -40,15 +40,15 @@ Drive the sequential PRD -> (optional) SRS -> (optional) SAD -> SDD -> ADR workf
    gaps). Each builder follows the confirmation batch contract in
    `shared/references/questioning-protocol.md`.
 4. **Dispatch** to the appropriate builder skill for the current stage.
-5. **Preview (optional)** during iteration: start the live preview server with
-   `bash "${CLAUDE_PLUGIN_ROOT}/scripts/start-server.sh"`. Render SDD diagrams for
-   review by extracting their inline Mermaid into a self-contained page —
-   `node "${CLAUDE_PLUGIN_ROOT}/scripts/mermaid-preview.js" .product/sdd/sdd.md <content>/sdd-diagrams.html`
-   — and OpenUI mockups via `openui-render.js`. The diagram preview HTML should be
-   written into the preview server's session content directory (the directory the
-   server serves), not into `.product/` proper. For a quick look without the preview server, run `node scripts/mermaid-preview.js <draft.md> <out.html>` and open the returned file directly.
-   Stop the server with
-   `bash "${CLAUDE_PLUGIN_ROOT}/scripts/stop-server.sh"` when done.
+5. **Diagram approval gate (mandatory — 006 B1).** Any document containing Mermaid
+   MUST have its diagrams rendered in the preview server and explicitly approved
+   before the document is marked done. The SDD/SAD builders own and enforce this
+   gate. Present the server's `markdown_link` field as a **clickable Markdown link —
+   never a raw copy-paste URL** — and start the server with `--open` after the user
+   opts into review (still print the link as a headless/remote fallback).
+   The server serves only the **single newest** `.html` screen (`getNewestScreen`);
+   there is no multi-screen navigation, so to review several documents' diagrams at
+   once, concatenate them into one screen file.
 6. **Sync after edits**: whenever a document is created or changed, run
    `egp-doc-sync` to propagate impacts and refresh the traceability matrix.
 7. **Advance** to the next stage when the current document is finalized.

@@ -56,6 +56,10 @@ SDD owns those as usual — creating this file is what puts the project into "SA
    server, print the `http://…` preview URL, and STOP for the reviewer's approval or
    change requests — do not batch-confirm diagrams and do not write them until
    approved. (Derive-then-confirm still covers section *text*, never diagrams.)
+   Present the preview as a **clickable Markdown link** (the server's `markdown_link`
+   field), never a raw URL. For a portable, un-breakable artifact (006 A2): once the
+   diagrams render in the preview, capture each `<svg>` and assemble a JS-free page
+   with `mermaid-preview.js --static <out.html> <a.svg> ...`.
 6. **Migrate macro-architecture out of the SDD (confirmation-gated).** If `.product/sdd/sdd.md`
    already holds an `AR` table and/or C4 Context+Container diagrams (an SDD authored before the
    SAD existed), propose the migration: lift the §3 `AR-NNN` rows and the Context/Container
