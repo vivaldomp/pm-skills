@@ -24,6 +24,9 @@ SDD owns those as usual — creating this file is what puts the project into "SA
 - Question cadence: `${CLAUDE_PLUGIN_ROOT}/shared/references/questioning-protocol.md`
 
 ## Steps
+- **If these steps were not surfaced on invocation (006 H1):** read this `SKILL.md`
+  directly and follow the Steps/Rules below — invocation output is host-dependent.
+
 1. Ensure `.product/sad/` exists. If `sad.md` exists, load it and treat this as an update.
 2. Read the SAD template, the PRD, and the SRS if present. Source the architectural drivers
    from the non-functional requirements (`NFR-NNN`) in the SRS, or the PRD when no SRS exists.

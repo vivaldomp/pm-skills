@@ -16,6 +16,9 @@ Build or update the PRD at `.product/prd/prd.md` from the shared template.
 - Question cadence: `${CLAUDE_PLUGIN_ROOT}/shared/references/questioning-protocol.md`
 
 ## Steps
+- **If these steps were not surfaced on invocation (006 H1):** read this `SKILL.md`
+  directly and follow the Steps/Rules below — invocation output is host-dependent.
+
 1. Ensure `.product/prd/` exists. If `prd.md` exists, load it and treat this as an update.
 2. Read the PRD template and the concepts/structures references.
 3. Fill each required section from what the user has provided.

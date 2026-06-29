@@ -19,6 +19,9 @@ derived from the PRD.
 - References: `${CLAUDE_PLUGIN_ROOT}/shared/references/{concepts,structures,questioning-protocol,openui-guide}.md`
 
 ## Steps
+- **If these steps were not surfaced on invocation (006 H1):** read this `SKILL.md`
+  directly and follow the Steps/Rules below — invocation output is host-dependent.
+
 1. If `.product/prd/prd.md` is missing, warn the user that the SDD should follow
    a PRD, and offer to run `egp-prd-builder` first (do not hard-block).
 2. Read the SDD template and the requirements source. **SRS mode** — when `.product/srs/srs.md`

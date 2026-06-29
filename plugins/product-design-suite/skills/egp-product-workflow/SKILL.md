@@ -74,6 +74,10 @@ suite, the user may request **batch / derive-all** mode:
   gate (step 5) and the consistency gate before marking the suite done.
 
 ## Rules
+- **Inline the builder's steps (006 H1):** Skill invocation output is host-dependent.
+  Before dispatching a builder, if its invocation does not surface its Steps/Rules,
+  read the builder's `SKILL.md` directly and follow it. Never proceed on a one-line
+  launch alone.
 - Respect the sequence; the PRD anchors the work, an optional SRS (when present) owns the
   detailed `FR`/`NFR`, an optional SAD (when present) owns the macro-architecture and `AR-NNN`
   that the SDD designs against, and ADRs record decisions made during SAD/SDD design.

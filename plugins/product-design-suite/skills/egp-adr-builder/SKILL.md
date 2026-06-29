@@ -15,6 +15,9 @@ Record one architectural decision per file in `.product/adr/`.
 - References: `${CLAUDE_PLUGIN_ROOT}/shared/references/{concepts,questioning-protocol}.md`
 
 ## Steps
+- **If these steps were not surfaced on invocation (006 H1):** read this `SKILL.md`
+  directly and follow the Steps/Rules below — invocation output is host-dependent.
+
 1. Ensure `.product/adr/` exists. Determine the next `ADR-NNN` by scanning
    existing files (zero-padded, starting at 001).
 2. Confirm the decision is significant and scoped to exactly ONE decision.

@@ -21,6 +21,9 @@ the PRD owns those requirements as usual — creating this file is what puts the
 - Question cadence: `${CLAUDE_PLUGIN_ROOT}/shared/references/questioning-protocol.md`
 
 ## Steps
+- **If these steps were not surfaced on invocation (006 H1):** read this `SKILL.md`
+  directly and follow the Steps/Rules below — invocation output is host-dependent.
+
 1. Ensure `.product/srs/` exists. If `srs.md` exists, load it and treat this as an update.
 2. Read the SRS template and the PRD. The SRS owns detailed functional (`FR-NNN`) and
    non-functional (`NFR-NNN`) requirements; business rules (`BR-NNN`) and user-acceptance
