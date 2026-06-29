@@ -10,12 +10,12 @@
 
 ## Global Constraints
 
-- Run any single test file with: `node --test tests/<file>.test.js`. Run the whole suite with: `node --test tests/`.
+- Run any single test file with: `node --test tests/<file>.test.js`. Run the whole suite with: `node --test tests/*.test.js`.
 - No new runtime dependencies. Scripts stay dependency-free (the existing code is pure `node:` builtins + Bash).
 - Static-SVG is "assemble" mode only — no bundled headless browser (puppeteer/mmdc).
 - `markdown_link` label is generic English (`Open diagram preview`); builders localize via the output-language setting.
 - Commit after each task. Branch is `feat/pm-feedback-006` (already created off `master`).
-- For doc-only tasks, "verify" = a `grep` that the new wording landed + `node --test tests/` stays green (the `*-conventions.test.js` structure tests must not regress).
+- For doc-only tasks, "verify" = a `grep` that the new wording landed + `node --test tests/*.test.js` stays green (the `*-conventions.test.js` structure tests must not regress).
 
 ---
 
@@ -461,7 +461,7 @@ In the Outputs section of `egp-import/SKILL.md` (where `import-gap-report.md` an
 
 Run: `grep -q 'Reconciliation Overlay' plugins/product-design-suite/skills/egp-import/SKILL.md && echo OK`
 Expected: `OK`
-Run: `node --test tests/`
+Run: `node --test tests/*.test.js`
 Expected: all pass (no regression).
 
 - [ ] **Step 4: Commit**
@@ -519,7 +519,7 @@ Run:
 for f in prd srs sad sdd adr; do grep -q 'Output language (006 G)' plugins/product-design-suite/skills/egp-${f}-builder/SKILL.md || echo "MISSING $f"; done; echo done
 ```
 Expected: `done` with no `MISSING` lines.
-Run: `node --test tests/`
+Run: `node --test tests/*.test.js`
 Expected: all pass.
 
 - [ ] **Step 5: Commit**
@@ -577,7 +577,7 @@ Run:
 for f in srs sad sdd adr; do grep -q 'ID ownership (006 D)' plugins/product-design-suite/skills/egp-${f}-builder/SKILL.md || echo "MISSING $f"; done; echo done
 ```
 Expected: `done` with no `MISSING`.
-Run: `node --test tests/`
+Run: `node --test tests/*.test.js`
 Expected: all pass.
 
 - [ ] **Step 5: Commit**
@@ -637,7 +637,7 @@ grep -q 'clickable Markdown link' plugins/product-design-suite/skills/egp-sdd-bu
 grep -q 'clickable Markdown link' plugins/product-design-suite/skills/egp-sad-builder/SKILL.md && echo OK
 ```
 Expected: `OK`
-Run: `node --test tests/`
+Run: `node --test tests/*.test.js`
 Expected: all pass.
 
 - [ ] **Step 5: Commit**
@@ -682,7 +682,7 @@ suite, the user may request **batch / derive-all** mode:
 
 Run: `grep -q 'Batch / derive-all mode (opt-in, 006 F)' plugins/product-design-suite/skills/egp-product-workflow/SKILL.md && echo OK`
 Expected: `OK`
-Run: `node --test tests/`
+Run: `node --test tests/*.test.js`
 Expected: all pass.
 
 - [ ] **Step 3: Commit**
@@ -731,7 +731,7 @@ for f in prd srs sad sdd adr; do grep -q '006 H1' plugins/product-design-suite/s
 echo done
 ```
 Expected: `done` with no `MISSING` lines above it.
-Run: `node --test tests/`
+Run: `node --test tests/*.test.js`
 Expected: all pass.
 
 - [ ] **Step 4: Commit**
@@ -747,7 +747,7 @@ git commit -m "docs: builders state their steps; orchestrator inlines SKILL.md i
 
 - [ ] **Run the full suite**
 
-Run: `node --test tests/`
+Run: `node --test tests/*.test.js`
 Expected: all tests pass, 0 fail.
 
 - [ ] **Confirm the feedback items are covered**
