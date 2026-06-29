@@ -64,3 +64,7 @@ Drive the sequential PRD -> (optional) SRS -> (optional) SAD -> SDD -> ADR workf
   `.product/srs/` and `.product/sad/` are created on demand by their builders — the workflow
   need not pre-create them.
 - Keep everything inside `.product/`.
+- **Output language (006 G):** Ask once for the output language and write
+  `outputLanguage` (and `codeAndJargon` if jargon/code should stay in another
+  language) into `.product/import-state.json`. Every builder reads these — do not
+  repeat the language rule per dispatch.

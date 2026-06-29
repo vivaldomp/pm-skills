@@ -43,6 +43,9 @@ Record one architectural decision per file in `.product/adr/`.
 ## Rules
 - One decision per ADR. If the user describes several, create several ADRs.
 - Keep it durable: explain *why*, not just *what*.
+- **Output language (006 G):** If `.product/import-state.json` has `outputLanguage`,
+  write all prose in it; if it has `codeAndJargon`, keep identifiers, code, and
+  technical jargon in that language. Absent → match the user's language.
 
 ## Guards
 - **`docs/` is read-only.** Never write under `docs/` — it is the import source. All authored

@@ -100,8 +100,12 @@ Record import decisions in `.product/import-state.json` so downstream builders
 read them instead of having them re-passed as arguments:
 
 ```json
-{ "sad": true, "adrGranularity": "per-file", "srs": false }
+{ "sad": true, "adrGranularity": "per-file", "srs": false, "outputLanguage": "pt-BR", "codeAndJargon": "en" }
 ```
+
+- `outputLanguage` (optional, e.g. `"pt-BR"`): language for all prose output.
+- `codeAndJargon` (optional, e.g. `"en"`): language to keep identifiers, code,
+  and technical jargon in. Absent → builders match the user's language.
 
 ## Rules
 - Read-only on source: never migrate, move, or edit the user's existing files.

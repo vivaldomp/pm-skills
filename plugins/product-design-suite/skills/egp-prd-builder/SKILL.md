@@ -47,6 +47,9 @@ Build or update the PRD at `.product/prd/prd.md` from the shared template.
 - Stay product-level: no architecture, schemas, or technology choices unless a
   hard constraint (see concepts.md "What a PRD should avoid").
 - Do not invent requirements; ask instead.
+- **Output language (006 G):** If `.product/import-state.json` has `outputLanguage`,
+  write all prose in it; if it has `codeAndJargon`, keep identifiers, code, and
+  technical jargon in that language. Absent → match the user's language.
 
 ## Guards
 - **`docs/` is read-only.** Never write under `docs/` — it is the import source. All authored

@@ -51,6 +51,9 @@ the PRD owns those requirements as usual — creating this file is what puts the
 - The SRS owns `FR`/`NFR` only; `BR` and `UAT` remain the PRD's responsibility.
 - Confirmation-gated: propose the PRD migration, then apply on approval. No silent rewrites.
 - Reuse source IDs verbatim; keep IDs stable across updates.
+- **Output language (006 G):** If `.product/import-state.json` has `outputLanguage`,
+  write all prose in it; if it has `codeAndJargon`, keep identifiers, code, and
+  technical jargon in that language. Absent → match the user's language.
 
 ## Guards
 - **`docs/` is read-only.** Never write under `docs/` — it is the import source. All authored
