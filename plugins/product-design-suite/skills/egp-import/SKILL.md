@@ -35,14 +35,19 @@ afterwards in derive-then-confirm mode.
    A **SAD source maps to `sad-template.md`** (`.product/sad/sad.md`); its `AR-NNN` are the
    canonical Architectural Requirements and its C4 Context/Container diagrams the canonical
    macro-architecture (the SDD then references them).
-4. **Write the gap report** to `.product/import-gap-report.md`. For each target
+4. **Reconcile against prior decisions (optional — 006 E).** When prior decisions
+   (existing `.product/adr/*`, a prior `.product/`, or user-supplied "these
+   decisions override the source") contradict the source, treat the source as
+   partially obsolete. For each conflict, record which decision supersedes which
+   source content. Do NOT carry superseded source content forward into any builder.
+5. **Write the gap report** to `.product/import-gap-report.md`. For each target
    document (PRD, SRS, SAD, SDD, ADR), a table mapping every template section to a status:
    - `derived` — source fully covers the section;
    - `partial` — source covers it incompletely;
    - `gap` — no source material (a genuine question for the builder);
    and, per document, an **unmapped source** list of source material that did not map
    to any template section, so nothing is silently dropped.
-5. **Hand off.** Offer to run each builder (`egp-prd-builder`, `egp-srs-builder`,
+6. **Hand off.** Offer to run each builder (`egp-prd-builder`, `egp-srs-builder`,
    `egp-sad-builder`, `egp-sdd-builder`, `egp-adr-builder`) in **derive-then-confirm** mode,
    pre-seeded with that document's mapped content and its gap list.
 
@@ -56,6 +61,10 @@ document (PRD, SRS, SAD, SDD, ADR) a mapping of every template section to a stat
 - `partial` — source covers it incompletely;
 - `gap` — no source material (a genuine question for the builder);
 plus an unmapped source list per document so nothing is silently dropped.
+
+- **Reconciliation Overlay** (in `import-gap-report.md`): a first-class section
+  listing each `source content → superseded by → decision (ADR-NNN / override)`
+  conflict, with the resolved truth the builders must use.
 
 ### Machine-readable map
 
@@ -73,6 +82,10 @@ builders consume a structured map instead of re-reading prose:
 ```
 
 `status` is one of `derived | partial | gap`.
+
+- `import-map.json`: each affected target gains a `supersedes` array
+  (`[{ "source": "<obsolete claim>", "by": "ADR-NNN | override", "resolved": "<truth>" }]`),
+  mirroring the ADR supersedes/amends machinery. Builders MUST honor it.
 
 ### Collected ADR handling (C2)
 
