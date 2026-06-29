@@ -42,7 +42,8 @@ Drive the sequential PRD -> (optional) SRS -> (optional) SAD -> SDD -> ADR workf
 4. **Dispatch** to the appropriate builder skill for the current stage.
 5. **Diagram approval gate (mandatory — 006 B1).** Any document containing Mermaid
    MUST have its diagrams rendered in the preview server and explicitly approved
-   before the document is marked done. The SDD/SAD builders own and enforce this
+   before the document is marked done. Diagrams are rendered with `mermaid-preview.js`;
+   for a portable JS-free version, use `mermaid-preview.js --static`. The SDD/SAD builders own and enforce this
    gate. Present the server's `markdown_link` field as a **clickable Markdown link —
    never a raw copy-paste URL** — and start the server with `--open` after the user
    opts into review (still print the link as a headless/remote fallback).
