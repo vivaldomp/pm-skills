@@ -30,6 +30,7 @@ resolve_latest() {
     mt="$(stat -c %Y "$d/state/server.pid" 2>/dev/null || stat -f %m "$d/state/server.pid" 2>/dev/null || echo 0)"
     if (( mt >= newest_mt )); then newest_mt="$mt"; newest="$d"; fi
   done
+  shopt -u nullglob
   printf '%s\n' "$newest"
 }
 

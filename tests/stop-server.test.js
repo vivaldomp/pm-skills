@@ -34,7 +34,7 @@ test('stop-server.sh --latest resolves and stops the newest session (006 H2)', (
 
   // process is gone
   let alive = true;
-  try { process.kill(child.pid, 0); } catch (e) { alive = false; }
+  try { process.kill(pid, 0); } catch (e) { alive = false; }
   assert.equal(alive, false, 'sleeper process should be killed');
 
   // Cleanup
