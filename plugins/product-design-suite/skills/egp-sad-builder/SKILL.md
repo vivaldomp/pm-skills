@@ -56,7 +56,7 @@ SDD owns those as usual — creating this file is what puts the project into "SA
    net-new and derived alike — MUST be rendered in the preview server and explicitly
    approved before it is written into `sad.md`. Derivation is NOT assumed faithful:
    conversion introduces footguns (semicolons, literal `\n`, quoting). Start the
-   server, print the `http://…` preview URL, and STOP for the reviewer's approval or
+   server, present the `markdown_link` as a clickable Markdown link, and STOP for the reviewer's approval or
    change requests — do not batch-confirm diagrams and do not write them until
    approved. (Derive-then-confirm still covers section *text*, never diagrams.)
    Present the preview as a **clickable Markdown link** (the server's `markdown_link`

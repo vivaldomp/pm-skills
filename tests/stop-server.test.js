@@ -29,14 +29,15 @@ test('stop-server.sh --latest resolves and stops the newest session (006 H2)', (
   // Give the sleeper process time to fully start before stop-server tries to kill it
   cp.spawnSync('sleep', ['0.2']);
 
-  const r = cp.spawnSync('bash', [STOP, '--latest', '--project-dir', proj], { encoding: 'utf8' });
-  assert.match(r.stdout, /"status": "stopped"/, r.stdout + r.stderr);
+  try {
+    const r = cp.spawnSync('bash', [STOP, '--latest', '--project-dir', proj], { encoding: 'utf8' });
+    assert.match(r.stdout, /"status": "stopped"/, r.stdout + r.stderr);
 
-  // process is gone
-  let alive = true;
-  try { process.kill(pid, 0); } catch (e) { alive = false; }
-  assert.equal(alive, false, 'sleeper process should be killed');
-
-  // Cleanup
-  fs.unlinkSync(sleeperScript);
+    // process is gone
+    let alive = true;
+    try { process.kill(pid, 0); } catch (e) { alive = false; }
+    assert.equal(alive, false, 'sleeper process should be killed');
+  } finally {
+    if (fs.existsSync(sleeperScript)) fs.unlinkSync(sleeperScript);
+  }
 });
