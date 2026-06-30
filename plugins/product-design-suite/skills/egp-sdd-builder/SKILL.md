@@ -67,14 +67,28 @@ derived from the PRD.
    - **Approval bar — ALL diagrams (B1/B3, feedback 005 P0/#6):** Every diagram —
      net-new and derived alike — MUST be rendered in the preview server and explicitly
      approved before it is written into `sdd.md`. Derivation is NOT assumed faithful:
-     conversion introduces footguns (semicolons, literal `\n`, quoting). Start the
-     server, present the `markdown_link` as a clickable Markdown link, and STOP for the reviewer's approval or
-     change requests — do not batch-confirm diagrams and do not write them until
-     approved. (Derive-then-confirm still covers section *text*, never diagrams.)
-     Present the preview as a **clickable Markdown link** (the server's `markdown_link`
-     field), never a raw URL. For a portable, un-breakable artifact (006 A2): once the
-     diagrams render in the preview, capture each `<svg>` and assemble a JS-free page
-     with `mermaid-preview.js --static <out.html> <a.svg> ...`.
+     conversion introduces footguns (semicolons, literal `\n`, quoting).
+     **Verify the render before presenting the link (007 #1/#4).** Before serving the
+     preview, run `node "${CLAUDE_PLUGIN_ROOT}/scripts/mermaid-preview.js" --verify <scratch.md>`.
+     - Exit 0 with "N diagram(s) rendered OK" → every block rendered; proceed to serve
+       the preview and present the `markdown_link` as a clickable Markdown link for approval.
+     - Exit 1 with "Diagram N failed to render: …" → a block did not parse. Fix it and
+       re-verify. **Do NOT present an approval link for a failed render** — server-up is
+       not the success signal; a verified render is.
+     - "render NOT verified — no browser found" → no system browser is installed; the lint
+       ran instead. Present the link but tell the reviewer the figures were **not**
+       render-verified in this environment.
+
+     **C4 fallback (007 #2):** if `--verify` names a `C4Context`/`C4Container` block as
+     failed, substitute a `flowchart`-with-`subgraph` boundaries equivalent for that block,
+     re-verify, and tell the user you fell back from C4. Leave C4 blocks that verify intact.
+
+     STOP for the reviewer's approval or change requests — do not batch-confirm diagrams and
+     do not write them until approved. (Derive-then-confirm still covers section *text*, never
+     diagrams.) Present the preview as a **clickable Markdown link** (the server's `markdown_link`
+     field), never a raw URL. For a portable artifact (006 A2): pass an output path to capture
+     the JS-free static page in the same step: `mermaid-preview.js --verify <scratch.md> <out.html>`
+     writes it from the rendered SVGs (this closes the former manual `--static` capture step).
    - **Optionally export** standalone files to `.product/diagrams/{c4,sequence,state,data,deployment,flow}/`
      only if the user wants separate artifacts.
 5. For UI/frontend sections, author OpenUI Lang in `.product/design/*.openui`
@@ -82,7 +96,10 @@ derived from the PRD.
 6. Identify decisions with significant trade-offs and flag them as ADR
    candidates; hand each to `egp-adr-builder`. Reference resulting `ADR-NNN`
    in the SDD's "Referenced ADRs" section.
-7. On finalize, populate the YAML front-matter (`title`, `status`, `version`,
+7. On finalize, before writing the file: if any gaps remain unresolved, run the
+   interactive gap checkpoint (see `questioning-protocol.md` → *Interactive gap checkpoint*);
+   finalize with gaps only on the user's explicit choice.
+   Then populate the YAML front-matter (`title`, `status`, `version`,
    `owner`, `date`) — bump `version` and refresh `date` on an update — write
    the SDD, and record unresolved gaps in Open Questions.
 8. Suggest running `egp-doc-sync` to refresh the traceability matrix. The SDD's

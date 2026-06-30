@@ -55,14 +55,28 @@ SDD owns those as usual — creating this file is what puts the project into "SA
    **Approval bar — ALL diagrams (B1/B3, feedback 005 P0/#6):** Every diagram —
    net-new and derived alike — MUST be rendered in the preview server and explicitly
    approved before it is written into `sad.md`. Derivation is NOT assumed faithful:
-   conversion introduces footguns (semicolons, literal `\n`, quoting). Start the
-   server, present the `markdown_link` as a clickable Markdown link, and STOP for the reviewer's approval or
-   change requests — do not batch-confirm diagrams and do not write them until
-   approved. (Derive-then-confirm still covers section *text*, never diagrams.)
-   Present the preview as a **clickable Markdown link** (the server's `markdown_link`
-   field), never a raw URL. For a portable, un-breakable artifact (006 A2): once the
-   diagrams render in the preview, capture each `<svg>` and assemble a JS-free page
-   with `mermaid-preview.js --static <out.html> <a.svg> ...`.
+   conversion introduces footguns (semicolons, literal `\n`, quoting).
+   **Verify the render before presenting the link (007 #1/#4).** Before serving the
+   preview, run `node "${CLAUDE_PLUGIN_ROOT}/scripts/mermaid-preview.js" --verify <scratch.md>`.
+   - Exit 0 with "N diagram(s) rendered OK" → every block rendered; proceed to serve
+     the preview and present the `markdown_link` as a clickable Markdown link for approval.
+   - Exit 1 with "Diagram N failed to render: …" → a block did not parse. Fix it and
+     re-verify. **Do NOT present an approval link for a failed render** — server-up is
+     not the success signal; a verified render is.
+   - "render NOT verified — no browser found" → no system browser is installed; the lint
+     ran instead. Present the link but tell the reviewer the figures were **not**
+     render-verified in this environment.
+
+   **C4 fallback (007 #2):** if `--verify` names a `C4Context`/`C4Container` block as
+   failed, substitute a `flowchart`-with-`subgraph` boundaries equivalent for that block,
+   re-verify, and tell the user you fell back from C4. Leave C4 blocks that verify intact.
+
+   STOP for the reviewer's approval or change requests — do not batch-confirm diagrams and
+   do not write them until approved. (Derive-then-confirm still covers section *text*, never
+   diagrams.) Present the preview as a **clickable Markdown link** (the server's `markdown_link`
+   field), never a raw URL. For a portable artifact (006 A2): pass an output path to capture
+   the JS-free static page in the same step: `mermaid-preview.js --verify <scratch.md> <out.html>`
+   writes it from the rendered SVGs (this closes the former manual `--static` capture step).
 6. **Migrate macro-architecture out of the SDD (confirmation-gated).** If `.product/sdd/sdd.md`
    already holds an `AR` table and/or C4 Context+Container diagrams (an SDD authored before the
    SAD existed), propose the migration: lift the §3 `AR-NNN` rows and the Context/Container
@@ -73,7 +87,10 @@ SDD owns those as usual — creating this file is what puts the project into "SA
 7. Identify structural decisions with significant trade-offs and flag them as ADR candidates;
    hand each to `egp-adr-builder` and reference the resulting `ADR-NNN` in §7. Offer to set the
    ADR's `related-sad` front-matter field.
-8. On finalize, populate the YAML front-matter (`title`, `status`, `version`, `owner`, `date`)
+8. On finalize, before writing the file: if any gaps remain unresolved, run the
+   interactive gap checkpoint (see `questioning-protocol.md` → *Interactive gap checkpoint*);
+   finalize with gaps only on the user's explicit choice.
+   Then populate the YAML front-matter (`title`, `status`, `version`, `owner`, `date`)
    — bump `version` and refresh `date` on an update — write `.product/sad/sad.md`, and record
    unresolved gaps in §8 Open Questions rather than leaving silent TBDs.
    Fill the `MODE-BANNER` slot with a concise orientation note (e.g., "This SAD owns the macro-architecture and AR-NNN")

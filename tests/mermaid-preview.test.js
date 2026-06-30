@@ -99,3 +99,89 @@ test('CLI prints the absolute output path for the one-shot render (B2)', () => {
   assert.match(res, new RegExp(out.replace(/[.\\]/g, '\\$&')));
   assert.ok(fs.existsSync(out));
 });
+
+test('buildVerifyPage inlines mermaid, embeds blocks, exposes result element', () => {
+  const html = m.buildVerifyPage(['flowchart TD\n A-->B'], '/*LIB*/');
+  assert.match(html, /\/\*LIB\*\//);
+  assert.match(html, /id="__pds_result"/);
+  assert.match(html, /mermaid\.render/);
+  assert.match(html, /flowchart TD/);
+});
+
+test('buildVerifyPage neutralizes a stray closing script tag in the lib', () => {
+  const html = m.buildVerifyPage([], '</script><script>alert(1)</script>');
+  assert.ok(!/<\/script><script>alert/.test(html));
+});
+
+test('buildVerifyPage neutralizes </script> inside embedded block data (T2 #1)', () => {
+  const html = m.buildVerifyPage(['flowchart TD\n A["</script>"]'], '/*LIB*/');
+  // Without fix the JSON literal would inject a raw </script> giving 3 occurrences;
+  // with fix only the two real closing tags remain.
+  assert.equal((html.match(/<\/script>/g) || []).length, 2,
+    'raw </script> in block data must be neutralized');
+  assert.match(html, /<\\\/script>/, 'escaped form must appear in page');
+});
+
+test('parseVerifyResult reads html-escaped JSON from the result element', () => {
+  const payload = JSON.stringify([{ ok: true, svg: '<svg id="a">x</svg>' }, { ok: false, error: 'Syntax error' }]);
+  const escaped = payload.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const dump = `<html><body><pre id="__pds_result">${escaped}</pre></body></html>`;
+  const out = m.parseVerifyResult(dump);
+  assert.equal(out.length, 2);
+  assert.equal(out[0].ok, true);
+  assert.match(out[0].svg, /<svg id="a">x<\/svg>/);
+  assert.equal(out[1].ok, false);
+});
+
+test('parseVerifyResult returns null when the element is absent', () => {
+  assert.equal(m.parseVerifyResult('<html><body>nothing</body></html>'), null);
+});
+
+test('findBrowser finds a binary on a synthetic PATH and respects CHROME_PATH', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pds-br-'));
+  const bin = path.join(dir, 'chromium');
+  fs.writeFileSync(bin, '#!/bin/sh\n'); fs.chmodSync(bin, 0o755);
+  assert.equal(m.findBrowser({ PATH: dir }), bin);
+  assert.equal(m.findBrowser({ PATH: '' }), null);
+  const explicit = path.join(dir, 'chromium');
+  assert.equal(m.findBrowser({ CHROME_PATH: explicit, PATH: '' }), explicit);
+  fs.rmSync(dir, { recursive: true, force: true });
+});
+
+test('--verify falls back to lint with a loud marker when no browser is present', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pds-vf-'));
+  const file = path.join(dir, 'd.md');
+  fs.writeFileSync(file, '```mermaid\nflowchart TD\n A[Start] --> B[End]\n```\n');
+  // Empty PATH + no CHROME_PATH ⇒ findBrowser() === null. Run node by absolute path.
+  const out = execFileSync(process.execPath, [CLI, '--verify', file],
+    { encoding: 'utf8', env: { PATH: '' } });
+  assert.match(out, /render NOT verified — no browser found/);
+  fs.rmSync(dir, { recursive: true, force: true });
+});
+
+test('--verify (no browser) exits nonzero when the lint finds a footgun', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pds-vf-'));
+  const file = path.join(dir, 'd.md');
+  fs.writeFileSync(file, '```mermaid\nsequenceDiagram\n  A->>B: do; then\n```\n');
+  let code = 0;
+  try {
+    execFileSync(process.execPath, [CLI, '--verify', file], { encoding: 'utf8', env: { PATH: '' } });
+  } catch (e) { code = e.status; }
+  assert.equal(code, 1);
+  fs.rmSync(dir, { recursive: true, force: true });
+});
+
+// Integration: only runs where a real browser exists. Skipped otherwise.
+test('runVerify reports a broken block by index when a browser is available', (t) => {
+  const m2 = require('../plugins/product-design-suite/scripts/mermaid-preview.js');
+  if (!m2.findBrowser()) { t.skip('no system browser'); return; }
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pds-vf-'));
+  const file = path.join(dir, 'd.md');
+  fs.writeFileSync(file,
+    '```mermaid\nflowchart TD\n A-->B\n```\n```mermaid\nflowchart TD\n A--> -- broken\n```\n');
+  const r = m2.runVerify(file);
+  assert.ok(Array.isArray(r.results) && r.results.length === 2);
+  assert.equal(r.results[0].ok, true);
+  assert.equal(r.results[1].ok, false);
+  fs.rmSync(dir, { recursive: true, force: true });
+});

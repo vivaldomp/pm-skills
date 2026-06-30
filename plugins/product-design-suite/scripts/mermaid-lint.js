@@ -41,20 +41,22 @@ function lintMarkdown(md) {
   return extractMermaidBlocks(md).flatMap((b, i) => lintBlock(b).map(e => `diagram ${i + 1}: ${e}`));
 }
 
-function lintProductDiagrams(dir) {
+function lintProductDiagrams(target) {
   const out = [];
+  const lintFile = p => {
+    const errs = lintMarkdown(fs.readFileSync(p, 'utf8'));
+    if (errs.length) out.push({ file: p, errors: errs });
+  };
   const walk = d => {
     if (!fs.existsSync(d)) return;
     for (const ent of fs.readdirSync(d, { withFileTypes: true })) {
       const p = path.join(d, ent.name);
       if (ent.isDirectory()) walk(p);
-      else if (ent.name.endsWith('.md')) {
-        const errs = lintMarkdown(fs.readFileSync(p, 'utf8'));
-        if (errs.length) out.push({ file: p, errors: errs });
-      }
+      else if (ent.name.endsWith('.md')) lintFile(p);
     }
   };
-  walk(dir);
+  if (fs.existsSync(target) && fs.statSync(target).isFile()) lintFile(target);
+  else walk(target);
   return out;
 }
 
