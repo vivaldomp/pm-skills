@@ -50,3 +50,25 @@ test('erDiagram with crow-foot cardinality is not flagged as unbalanced braces (
   const errs = m.lintBlock('erDiagram\n  CUSTOMER ||--o{ ORDER : places\n  ORDER ||--|{ LINE_ITEM : contains');
   assert.ok(!errs.some(e => /unbalanced/.test(e)), `erDiagram cardinality must not trip brace check: ${errs.join(', ')}`);
 });
+
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
+
+test('lintProductDiagrams accepts a single file path without ENOTDIR (007 #3)', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pds-lint-'));
+  const file = path.join(dir, 'draft.md');
+  fs.writeFileSync(file, '```mermaid\nsequenceDiagram\n  A->>B: do; then\n```\n');
+  const out = m.lintProductDiagrams(file); // must NOT throw ENOTDIR
+  assert.equal(out.length, 1, 'one file with findings');
+  assert.ok(out[0].errors.some(e => /semicolon/.test(e)));
+  fs.rmSync(dir, { recursive: true, force: true });
+});
+
+test('lintProductDiagrams still walks a directory tree', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pds-lint-'));
+  fs.writeFileSync(path.join(dir, 'a.md'), '```mermaid\nflowchart TD\n A[x --> B\n```\n');
+  const out = m.lintProductDiagrams(dir);
+  assert.ok(out.some(r => r.errors.some(e => /unbalanced/.test(e))));
+  fs.rmSync(dir, { recursive: true, force: true });
+});
