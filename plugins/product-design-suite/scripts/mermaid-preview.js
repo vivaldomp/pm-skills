@@ -112,11 +112,72 @@ function renderStaticSvgPage(svgs, opts = {}) {
     `</head><body><h1>${esc(title)}</h1>${figures}</body></html>`;
 }
 
+// Headless-render every block in inPath. Returns the browser used (or null),
+// the source blocks, and the per-block results (or null if unreadable).
+function runVerify(inPath) {
+  const blocks = extractMermaidBlocks(fs.readFileSync(inPath, 'utf8'));
+  const browser = findBrowser();
+  if (!browser) return { browser: null, blocks, results: null };
+  const mermaidJs = fs.existsSync(VENDOR_MERMAID) ? fs.readFileSync(VENDOR_MERMAID, 'utf8') : '';
+  const tmp = path.join(os.tmpdir(), `pds-verify-${process.pid}-${Date.now()}.html`);
+  fs.writeFileSync(tmp, buildVerifyPage(blocks, mermaidJs));
+  let dump = '';
+  try {
+    dump = execFileSync(browser,
+      ['--headless', '--disable-gpu', '--no-sandbox', '--virtual-time-budget=10000',
+       '--dump-dom', 'file://' + tmp],
+      { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, timeout: 30000 });
+  } finally {
+    try { fs.unlinkSync(tmp); } catch (e) { /* best effort */ }
+  }
+  return { browser, blocks, results: parseVerifyResult(dump) };
+}
+
 module.exports = { extractMermaidBlocks, renderPreview, renderStaticSvgPage,
-  findBrowser, buildVerifyPage, parseVerifyResult };
+  findBrowser, buildVerifyPage, parseVerifyResult, runVerify };
 
 if (require.main === module) {
   const argv = process.argv.slice(2);
+  if (argv[0] === '--verify') {
+    const [, inPath, outPath] = argv;
+    if (!inPath) {
+      console.error('usage: mermaid-preview.js --verify <input.md> [out.html]');
+      process.exit(1);
+    }
+    const r = runVerify(inPath);
+    if (r.browser === null) {
+      const { lintMarkdown } = require('./mermaid-lint.js'); // lazy: avoids require cycle
+      const errs = lintMarkdown(fs.readFileSync(inPath, 'utf8'));
+      if (errs.length) {
+        for (const e of errs) console.error(e);
+        console.error('mermaid-verify: lint errors (render not verified)');
+        process.exit(1);
+      }
+      console.log('mermaid-verify: render NOT verified — no browser found (lint clean)');
+      process.exit(0);
+    }
+    if (!r.results) {
+      console.error('mermaid-verify: could not read render result from the browser');
+      process.exit(1);
+    }
+    const failed = r.results.map((x, i) => ({ i, x })).filter(o => !o.x.ok);
+    if (failed.length || r.results.length < r.blocks.length) {
+      for (const o of failed) console.error(`Diagram ${o.i + 1} failed to render: ${o.x.error}`);
+      if (r.results.length < r.blocks.length) {
+        console.error(`only ${r.results.length}/${r.blocks.length} diagrams produced output`);
+      }
+      console.error('mermaid-verify: render FAILED');
+      process.exit(1);
+    }
+    if (outPath) {
+      const abs = path.resolve(outPath);
+      fs.writeFileSync(abs, renderStaticSvgPage(r.results.map(x => x.svg), { title: path.basename(outPath) }));
+      console.log(`mermaid-verify: ${r.results.length} diagram(s) rendered — wrote ${abs} (JS-free; open directly).`);
+    } else {
+      console.log(`mermaid-verify: ${r.results.length} diagram(s) rendered OK.`);
+    }
+    process.exit(0);
+  }
   if (argv[0] === '--static') {
     const [, outPath, ...svgPaths] = argv;
     if (!outPath || !svgPaths.length) {
