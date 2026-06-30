@@ -81,3 +81,10 @@ test('concepts documents the SAD as an optional document', () => {
   assert.match(s, /SAD/);
   assert.match(s, /\.product\/sad\/sad\.md/);
 });
+
+test('egp-sad-builder requires render-verify before the approval link and a C4 fallback (007)', () => {
+  const s = read('skills/egp-sad-builder/SKILL.md');
+  assert.match(s, /--verify/, 'gate must run mermaid-preview.js --verify');
+  assert.match(s, /render NOT verified|no browser found/, 'must document the no-browser fallback');
+  assert.match(s, /flowchart[^\n]*subgraph|subgraph[^\n]*boundar/i, 'must document the C4→flowchart fallback');
+});
