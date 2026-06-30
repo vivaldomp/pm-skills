@@ -1,7 +1,64 @@
 const fs = require('node:fs');
+const os = require('node:os');
 const path = require('node:path');
+const { execFileSync } = require('node:child_process');
 
 const VENDOR_MERMAID = path.join(__dirname, 'vendor', 'mermaid.min.js');
+
+const BROWSER_CANDIDATES = ['google-chrome', 'chromium', 'chromium-browser', 'chrome', 'msedge'];
+
+// Absolute path to a usable system browser, or null. CHROME_PATH wins; else
+// scan PATH for the first known binary. No npm dependency — the plugin stays
+// dependency-free (007 render-engine decision).
+function findBrowser(env = process.env) {
+  if (env.CHROME_PATH && fs.existsSync(env.CHROME_PATH)) return env.CHROME_PATH;
+  const dirs = String(env.PATH || '').split(path.delimiter).filter(Boolean);
+  for (const name of BROWSER_CANDIDATES) {
+    for (const dir of dirs) {
+      const full = path.join(dir, name);
+      try { fs.accessSync(full, fs.constants.X_OK); return full; } catch (e) { /* keep looking */ }
+    }
+  }
+  return null;
+}
+
+// Page that renders each block headlessly via mermaid.render and writes a JSON
+// array of {ok, svg} | {ok, error} into a known element. We own this format, so
+// the verifier reads structured results instead of scraping Mermaid's own DOM.
+function buildVerifyPage(blocks, mermaidJs) {
+  const js = String(mermaidJs || '').replace(/<\/script>/gi, '<\\/script>');
+  const data = JSON.stringify(blocks || []);
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>` +
+    `<pre id="__pds_result"></pre>` +
+    `<script>${js}</script>` +
+    `<script>(async()=>{` +
+    `try{mermaid.initialize({startOnLoad:false});}catch(e){}` +
+    `const blocks=${data};const out=[];` +
+    `for(let i=0;i<blocks.length;i++){` +
+    `try{const r=await mermaid.render('pdsv'+i,blocks[i]);out.push({ok:true,svg:r.svg});}` +
+    `catch(e){out.push({ok:false,error:String(e&&e.message||e)});}` +
+    `}` +
+    `document.getElementById('__pds_result').textContent=JSON.stringify(out);` +
+    `})();</script></body></html>`;
+}
+
+function htmlUnescape(s) {
+  return String(s)
+    .replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"').replace(/&#39;/g, "'")
+    .replace(/&amp;/g, '&');
+}
+
+// Extract and parse the JSON the verify page wrote. Browsers serialize text
+// nodes with &, <, > escaped; unescape before JSON.parse. Returns null on any
+// problem so the caller can report "could not read render result".
+function parseVerifyResult(dumpedHtml) {
+  const mm = String(dumpedHtml).match(/<pre id="__pds_result">([\s\S]*?)<\/pre>/);
+  if (!mm) return null;
+  const json = htmlUnescape(mm[1]).trim();
+  if (!json) return null;
+  try { return JSON.parse(json); } catch (e) { return null; }
+}
 
 function esc(s) {
   return String(s == null ? '' : s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
@@ -55,7 +112,8 @@ function renderStaticSvgPage(svgs, opts = {}) {
     `</head><body><h1>${esc(title)}</h1>${figures}</body></html>`;
 }
 
-module.exports = { extractMermaidBlocks, renderPreview, renderStaticSvgPage };
+module.exports = { extractMermaidBlocks, renderPreview, renderStaticSvgPage,
+  findBrowser, buildVerifyPage, parseVerifyResult };
 
 if (require.main === module) {
   const argv = process.argv.slice(2);

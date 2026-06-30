@@ -99,3 +99,42 @@ test('CLI prints the absolute output path for the one-shot render (B2)', () => {
   assert.match(res, new RegExp(out.replace(/[.\\]/g, '\\$&')));
   assert.ok(fs.existsSync(out));
 });
+
+test('buildVerifyPage inlines mermaid, embeds blocks, exposes result element', () => {
+  const html = m.buildVerifyPage(['flowchart TD\n A-->B'], '/*LIB*/');
+  assert.match(html, /\/\*LIB\*\//);
+  assert.match(html, /id="__pds_result"/);
+  assert.match(html, /mermaid\.render/);
+  assert.match(html, /flowchart TD/);
+});
+
+test('buildVerifyPage neutralizes a stray closing script tag in the lib', () => {
+  const html = m.buildVerifyPage([], '</script><script>alert(1)</script>');
+  assert.ok(!/<\/script><script>alert/.test(html));
+});
+
+test('parseVerifyResult reads html-escaped JSON from the result element', () => {
+  const payload = JSON.stringify([{ ok: true, svg: '<svg id="a">x</svg>' }, { ok: false, error: 'Syntax error' }]);
+  const escaped = payload.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const dump = `<html><body><pre id="__pds_result">${escaped}</pre></body></html>`;
+  const out = m.parseVerifyResult(dump);
+  assert.equal(out.length, 2);
+  assert.equal(out[0].ok, true);
+  assert.match(out[0].svg, /<svg id="a">x<\/svg>/);
+  assert.equal(out[1].ok, false);
+});
+
+test('parseVerifyResult returns null when the element is absent', () => {
+  assert.equal(m.parseVerifyResult('<html><body>nothing</body></html>'), null);
+});
+
+test('findBrowser finds a binary on a synthetic PATH and respects CHROME_PATH', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pds-br-'));
+  const bin = path.join(dir, 'chromium');
+  fs.writeFileSync(bin, '#!/bin/sh\n'); fs.chmodSync(bin, 0o755);
+  assert.equal(m.findBrowser({ PATH: dir }), bin);
+  assert.equal(m.findBrowser({ PATH: '' }), null);
+  const explicit = path.join(dir, 'chromium');
+  assert.equal(m.findBrowser({ CHROME_PATH: explicit, PATH: '' }), explicit);
+  fs.rmSync(dir, { recursive: true, force: true });
+});
