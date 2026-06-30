@@ -27,7 +27,7 @@ function findBrowser(env = process.env) {
 // the verifier reads structured results instead of scraping Mermaid's own DOM.
 function buildVerifyPage(blocks, mermaidJs) {
   const js = String(mermaidJs || '').replace(/<\/script>/gi, '<\\/script>');
-  const data = JSON.stringify(blocks || []);
+  const data = JSON.stringify(blocks || []).replace(/<\/script>/gi, '<\\/script>');
   return `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>` +
     `<pre id="__pds_result"></pre>` +
     `<script>${js}</script>` +
@@ -127,7 +127,8 @@ function runVerify(inPath) {
       ['--headless', '--disable-gpu', '--no-sandbox', '--virtual-time-budget=10000',
        '--dump-dom', 'file://' + tmp],
       { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, timeout: 30000 });
-  } finally {
+  } catch (e) { /* ponytail: browser crash/timeout/nonzero-exit → dump stays '' → results: null */ }
+  finally {
     try { fs.unlinkSync(tmp); } catch (e) { /* best effort */ }
   }
   return { browser, blocks, results: parseVerifyResult(dump) };

@@ -96,7 +96,10 @@ derived from the PRD.
 6. Identify decisions with significant trade-offs and flag them as ADR
    candidates; hand each to `egp-adr-builder`. Reference resulting `ADR-NNN`
    in the SDD's "Referenced ADRs" section.
-7. On finalize, populate the YAML front-matter (`title`, `status`, `version`,
+7. On finalize, before writing the file: if any gaps remain unresolved, run the
+   interactive gap checkpoint (see `questioning-protocol.md` → *Interactive gap checkpoint*);
+   finalize with gaps only on the user's explicit choice.
+   Then populate the YAML front-matter (`title`, `status`, `version`,
    `owner`, `date`) — bump `version` and refresh `date` on an update — write
    the SDD, and record unresolved gaps in Open Questions.
 8. Suggest running `egp-doc-sync` to refresh the traceability matrix. The SDD's

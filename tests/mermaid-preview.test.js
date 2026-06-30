@@ -113,6 +113,15 @@ test('buildVerifyPage neutralizes a stray closing script tag in the lib', () => 
   assert.ok(!/<\/script><script>alert/.test(html));
 });
 
+test('buildVerifyPage neutralizes </script> inside embedded block data (T2 #1)', () => {
+  const html = m.buildVerifyPage(['flowchart TD\n A["</script>"]'], '/*LIB*/');
+  // Without fix the JSON literal would inject a raw </script> giving 3 occurrences;
+  // with fix only the two real closing tags remain.
+  assert.equal((html.match(/<\/script>/g) || []).length, 2,
+    'raw </script> in block data must be neutralized');
+  assert.match(html, /<\\\/script>/, 'escaped form must appear in page');
+});
+
 test('parseVerifyResult reads html-escaped JSON from the result element', () => {
   const payload = JSON.stringify([{ ok: true, svg: '<svg id="a">x</svg>' }, { ok: false, error: 'Syntax error' }]);
   const escaped = payload.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
